@@ -7,7 +7,7 @@
 #Date: 2020-03-25
 #Description:   通用的配置管理,包括数据库地址,网络地址等
 
-_VERSION="20210526"
+_VERSION="20260606"
 
 
 import os
@@ -37,20 +37,13 @@ _REDIS_DB_PORT_ORIGINAL = 6379
 _REDIS_DB_PORT_DEFAULT = 16379
 _REDIS_DB_NO_DEFAULT = 3
 
-iotDemoServieAddr = "www.iotdemo.tech"
-iotDeviceServiceAddr = "config.iotdemo.tech"
-localHostServieAddr = "127.0.0.1"
-iotDeviceServiceURL = "/devs"
-iotDeviceLVServiceURL = "/py"
-iotDevApiServiceURL = "/devapis"
-
 #主库，写记录
 REDIS_WRITE_HOST = {
     #"local":"127.0.0.1",
-    "local":"r-2zeypsy15nqwcwysxp.redis.rds.aliyuncs.com",
-    "iotDevice":iotDeviceServiceAddr, 
-    "localHost":localHostServieAddr, 
-    "iotdemo":localHostServieAddr, 
+    "local":"127.0.0.1",
+    "iotDevice":"127.0.0.1", 
+    "localHost":"127.0.0.1", 
+    "iotdemo":"127.0.0.1", 
     "iotHome":"192.168.100.58", 
     }[_SYS]
 
@@ -73,10 +66,10 @@ REDIS_WRITE_DB = {
 #从库，读记录
 REDIS_READ_HOST = {
     #"local":"127.0.0.1",
-    "local":"r-2zeypsy15nqwcwysxp.redis.rds.aliyuncs.com",
-    "iotDevice":iotDeviceServiceAddr, 
-    "localHost":localHostServieAddr, 
-    "iotdemo":localHostServieAddr, 
+    "local":"127.0.0.1",
+    "iotDevice":"127.0.0.1", 
+    "localHost":"127.0.0.1", 
+    "iotdemo":"127.0.0.1", 
     "iotHome":"192.168.100.58", 
     }[_SYS]
     
@@ -97,7 +90,7 @@ REDIS_READ_DB = {
     }[_SYS]
         
 REDIS_PASSWD = {
-    "local":"Bupt123456",
+    "local":"",
     "iotDevice":"", 
     "localHost":"", 
     "iotdemo":"", 
@@ -134,20 +127,20 @@ SYS_DEFAULT_AUTO_LOGINID ={
 
 #genDigistKey
 GEN_DIGIST_KEY ={
-    "local":"buptabscomsteve", 
-    "iotDevice":"buptabscomsteve", 
-    "localHost":"buptabscomsteve", 
-    "iotdemo":"buptabscomsteve", 
-    "iotHome":"buptabscomsteve", 
+    "local":"digistkey", 
+    "iotDevice":"digistkey", 
+    "localHost":"digistkey", 
+    "iotdemo":"digistkey", 
+    "iotHome":"digistkey", 
 }[_SYS]
 
 
 #file server url dataSet, 注意这个是一个字典
 FILE_SERVER_URL ={
 "local":"http://127.0.0.1/hfile",
-"iotDevice":"http://www.iotdemo.tech/hfile", 
+"iotDevice":"http://127.0.0.1/hfile", 
 "localHost":"http://www.localHost.online/hfile", 
-"iotdemo":"http://www.iotdemo.tech/hfile", 
+"iotdemo":"http://127.0.0.1/hfile", 
 "iotHome":"http://192.168.100.58/hfile", 
 }
 
