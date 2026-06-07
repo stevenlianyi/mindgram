@@ -7,7 +7,7 @@
 #Date: 2020-8-5
 #Description:  生成标准的mysqlCommon 和RESTful 接口所用的增删改查
 
-_VERSION = "20260602"
+_VERSION = "20260607"
 
 _DEBUG=True
 #auto_increment_default_value = 10000
@@ -200,9 +200,7 @@ def decodeDataType(typeString):
 
 def genTableNameConvertorCode(tableName,keysList):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
     
     TS2 = TS + TS
 
@@ -232,10 +230,8 @@ def genTableNameConvertorCode(tableName,keysList):
 
 def genTableNameDecodeCode(tableName):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
-    
+    TS = " " * indentLen
+   
     TS2 = TS + TS
 
     aList = []
@@ -262,9 +258,7 @@ def genTableNameDecodeCode(tableName):
 
 def genCreateCode(tableName, dataStructure, primaryKeys = []):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
     
     TS2 = TS + TS
     
@@ -354,10 +348,8 @@ def genCreateCode(tableName, dataStructure, primaryKeys = []):
 
 def genDropCode(tableName,dataStructure):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
-    
+    TS = " " * indentLen
+
     if len(dataStructure) > 0:
 
 
@@ -374,16 +366,15 @@ def genDropCode(tableName,dataStructure):
         aList.append(tempString)
         aList.append("")
 
-    result = "\n".join(aList)
+        result = "\n".join(aList)
     
     return result
 
 
 def genQueryCode(tableName, dataStructure):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
+
     TS2 = TS + TS
     TS3 = TS2 + TS
     TS4 = TS3 + TS
@@ -511,10 +502,9 @@ def genQueryCode(tableName, dataStructure):
 
 def genDeleteCode(tableName, dataStructure):
     result = ""
-    TS = ""
+    TS = " " * indentLen
+
     TS2 = TS + TS
-    for i in range(indentLen):
-        TS+=" "
 
     nLen = len(dataStructure)
 
@@ -569,9 +559,7 @@ def genDeleteCode(tableName, dataStructure):
 
 def genInsertCode(tableName, dataStructure):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
 
     TS2 = TS + TS
 
@@ -679,9 +667,8 @@ def genInsertCode(tableName, dataStructure):
 
 def genUpdateCode(tableName, dataStructure):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
+
 
     AUTO_INCREMENT_KEYS = []
 
@@ -795,11 +782,9 @@ def genUpdateCode(tableName, dataStructure):
 
 
 #Server REST增加代码
-def genCmdAddCode(tableName, dataStructure):
+def genCmdAddCode(tableName, dataStructure,cmdTitle="cmd"):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
     TS2 = TS+TS
     TS3 = TS2+TS
     TS4 = TS3+TS
@@ -813,7 +798,8 @@ def genCmdAddCode(tableName, dataStructure):
         tempString = '#Server REST增加代码'
         aList.append(tempString)
 
-        tempString = 'def cmdAdd(CMD,dataSet,sessionIDSet):'
+        cmdTitle = cmdTitle.capitalize()
+        tempString = f'def func{cmdTitle}Add(CMD,dataSet,sessionIDSet):'
         aList.append(tempString)
         
         tempString = TS + 'result = {}'
@@ -1003,11 +989,10 @@ def genCmdAddCode(tableName, dataStructure):
 
 
 #Server REST删除代码
-def genCmdDelCode(tableName, dataStructure):
+def genCmdDelCode(tableName, dataStructure,cmdTitle="cmd"):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
+
     TS2 = TS+TS
     TS3 = TS2+TS
     TS4 = TS3+TS
@@ -1028,7 +1013,8 @@ def genCmdDelCode(tableName, dataStructure):
         tempString = '#Server REST删除代码'
         aList.append(tempString)
 
-        tempString = 'def cmdDel(CMD,dataSet,sessionIDSet):'
+        cmdTitle = cmdTitle.capitalize()
+        tempString = f'def func{cmdTitle}Del(CMD,dataSet,sessionIDSet):'
         aList.append(tempString)
         
         tempString = TS + 'result = {}'
@@ -1209,11 +1195,10 @@ def genCmdDelCode(tableName, dataStructure):
 
 
 #Server REST修改代码
-def genCmdUpdateCode(tableName, dataStructure):
+def genCmdUpdateCode(tableName, dataStructure,cmdTitle="cmd"):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
+
     TS2 = TS+TS
     TS3 = TS2+TS
     TS4 = TS3+TS
@@ -1229,7 +1214,8 @@ def genCmdUpdateCode(tableName, dataStructure):
         tempString = '#Server REST修改代码'
         aList.append(tempString)
 
-        tempString = 'def cmdModify(CMD,dataSet,sessionIDSet):'
+        cmdTitle = cmdTitle.capitalize()
+        tempString = f'def func{cmdTitle}Modify(CMD,dataSet,sessionIDSet):'
         aList.append(tempString)
         
         tempString = TS + 'result = {}'
@@ -1524,11 +1510,10 @@ def genCmdUpdateCode(tableName, dataStructure):
 
 
 #Server REST查询代码
-def genCmdQueryCode(tableName, dataStructure):
+def genCmdQueryCode(tableName, dataStructure,cmdTitle="cmd"):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
+
     TS2 = TS+TS
     TS3 = TS2+TS
     TS4 = TS3+TS
@@ -1552,7 +1537,8 @@ def genCmdQueryCode(tableName, dataStructure):
         tempString = '#Server REST查询代码'
         aList.append(tempString)
 
-        tempString = 'def cmdQry(CMD,dataSet,sessionIDSet):'
+        cmdTitle = cmdTitle.capitalize()
+        tempString = f'def func{cmdTitle}Qry(CMD,dataSet,sessionIDSet):'
         aList.append(tempString)
         
         tempString = TS + 'result = {}'
@@ -1884,9 +1870,8 @@ def genCmdQueryCode(tableName, dataStructure):
 #testMysql code 
 def genTestMysqlCode(tableName, dataStructure):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
+
     TS2 = TS+TS
     
     aList = []
@@ -1906,6 +1891,8 @@ def genTestMysqlCode(tableName, dataStructure):
         aList.append(tempString)
 
         aList.append("")
+
+        fieldName = ""
         
         primaryKey = dataStructure[0]["fieldName"]
         for data in dataStructure:
@@ -1985,9 +1972,8 @@ def genTestMysqlCode(tableName, dataStructure):
 # http interface test msg
 def genTestMsgCode(tableName, dataStructure):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
+
     TS2 = TS+TS
     aList = []
     
@@ -2118,7 +2104,7 @@ def anaTableData(tableName,  dataList):
     return result
     
     
-def  generateFuncs(tableName, dataStructure,  primaryKeys = []):
+def  generateFuncs(tableName, dataStructure,  primaryKeys = [],cmdTitle="cmd"):
     result = []
 
     tempString = "\n#mysqlCommon code begin \n"
@@ -2176,19 +2162,19 @@ def  generateFuncs(tableName, dataStructure,  primaryKeys = []):
     result.append(tempString) 
    
     #Server REST增加代码
-    tempString = genCmdAddCode(tableName, dataStructure)
+    tempString = genCmdAddCode(tableName, dataStructure,cmdTitle)
     result.append(tempString) 
 
     #Server REST删除代码
-    tempString = genCmdDelCode(tableName, dataStructure)
+    tempString = genCmdDelCode(tableName, dataStructure,cmdTitle)
     result.append(tempString) 
 
     #Server REST修改代码
-    tempString = genCmdUpdateCode(tableName, dataStructure)
+    tempString = genCmdUpdateCode(tableName, dataStructure,cmdTitle)
     result.append(tempString) 
 
     #Server REST查询代码
-    tempString = genCmdQueryCode(tableName, dataStructure)
+    tempString = genCmdQueryCode(tableName, dataStructure,cmdTitle)
     result.append(tempString) 
 
     tempString = "\n#http interface code end \n"
@@ -2253,9 +2239,8 @@ def splitInsertSQL(data):
 # insert test code
 def genRecordAddCode(dataList):
     result = ""
-    TS = ""
-    for i in range(indentLen):
-        TS+=" "
+    TS = " " * indentLen
+
     TS2 = TS+TS
     aList = []
 
@@ -2334,9 +2319,9 @@ def writeCode(fileName, funcsCodeList,insertsCodeList):
 
 
 # 代码生成器        
-def coderGenerator(tableName,  fieldsList,  primaryKeys = [], insertsList = []):
+def coderGenerator(tableName,  fieldsList,  cmdTitle="cmd",primaryKeys = [], insertsList = []):
     dataStructure = anaTableData(tableName,  fieldsList)
-    funcsCodeList = generateFuncs(tableName, dataStructure, primaryKeys)
+    funcsCodeList = generateFuncs(tableName, dataStructure, primaryKeys, cmdTitle)
     insertsCodeList = generateRecordsInsert(insertsList)
     fileName = "auto_gen_code_" + tableName + ".py"
     writeCode(fileName,  funcsCodeList,insertsCodeList)
@@ -2524,7 +2509,7 @@ def wordTableGenerator(tableName, fieldsList):
         pass
 
 
-def readFromFile(fileName):
+def readFromFile(fileName,cmdTitle="cmd"):
     try:
         tableName = "TABLE"
         fieldsList = []
@@ -2539,13 +2524,14 @@ def readFromFile(fileName):
         for line in lines:
             line = line.strip("\n")
             #表名可以用tableName = "table"指定
-            line.find("=")
-            aList = line.split("=")
-            if len(aList) >=2:
-                tableName = aList[1].strip()
+            tableNameFindPos = line.upper().find("TABLENAME")
+            if tableNameFindPos >= 0:
+                aList = line.split("=")
+                if len(aList) >=2:
+                    tableName = aList[1].strip().strip('"').strip("'")
                 continue
             fieldsList.append(line)
-        coderGenerator(tableName, fieldsList)
+        coderGenerator(tableName, fieldsList,cmdTitle)
         wordTableGenerator(tableName, fieldsList)
     except:
         traceback.print_exc()
@@ -2557,7 +2543,7 @@ def mysqlStatementHandle():
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hdi:", ["help", "debug", "input="])
+        opts, args = getopt.getopt(sys.argv[1:], "hdi:t:", ["help", "debug", "input=","title="])
     except getopt.GetoptError:
         sys.exit()
 
@@ -2565,6 +2551,7 @@ def main():
 
     # inputFileName = "table.txt"
     inputFileName = r"database/stock_technical_indicators.txt"
+    cmdTitle = "cmd"
     for name, value in opts:
         if name in ("-h", "--help"):
             # 打印帮助信息
@@ -2576,15 +2563,17 @@ def main():
         
         elif name in ("-i", "--input"):
             inputFileName = value
+        elif name in ("-t", "--title"):
+            cmdTitle = value
 
     if debugFlag:
         import pdb
         pdb.set_trace()
 
-    print(f"I: PID:{_processorPID}, debug:{debugFlag}, inputFileName:{inputFileName}")
+    print(f"I: PID:{_processorPID}, debug:{debugFlag}, inputFileName:{inputFileName}, cmdTitle:{cmdTitle}")
     #mysqlStatementHandle()
     #standardCode()
-    readFromFile(inputFileName)
+    readFromFile(inputFileName,cmdTitle=cmdTitle)
 
 
 if __name__ == "__main__":

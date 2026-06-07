@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #encoding: utf-8
 
 #Filename: mindgramAPIPost.py 
@@ -8,7 +8,7 @@
 #Description:  minggram API post 
 
 
-_VERSION="20260606"
+_VERSION="20260607"
 
 
 import os
@@ -2888,6 +2888,5495 @@ def funcGetOmcInfo(CMD,dataSet,sessionIDSet):
     return result
 
 
+
+#mindgram HTTP interface functions begin
+
+
+
+#Server REST增加代码
+def funcMgannualfilmAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["userID"] = dataSet.get("userID", "") 
+                    saveSet["filmYear"] = dataSet.get("filmYear", "") 
+                    saveSet["videoUrl"] = dataSet.get("videoUrl", "") 
+                    saveSet["duration"] = dataSet.get("duration", "") 
+                    saveSet["scenesData"] = dataSet.get("scenesData", "") 
+                    saveSet["resilienceScore"] = dataSet.get("resilienceScore", "") 
+                    saveSet["headlineStats"] = dataSet.get("headlineStats", "") 
+                    saveSet["narrationScript"] = dataSet.get("narrationScript", "") 
+                    saveSet["exportUrl"] = dataSet.get("exportUrl", "") 
+                    saveSet["chapterData"] = dataSet.get("chapterData", "") 
+                    saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgAnnualFilm()
+                    recID = comMysql.insert_mgAnnualFilm(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMgannualfilmDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                filmID = dataSet.get("filmID", "")
+                tableName = comMysql.tablename_convertor_mgAnnualFilm()
+                currDataList = comMysql.query_mgAnnualFilm(tableName,filmID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgAnnualFilm(tableName,filmID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMgannualfilmModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                userID = dataSet.get("userID") 
+                filmYear = dataSet.get("filmYear") 
+                videoUrl = dataSet.get("videoUrl") 
+                duration = dataSet.get("duration") 
+                scenesData = dataSet.get("scenesData") 
+                resilienceScore = dataSet.get("resilienceScore") 
+                headlineStats = dataSet.get("headlineStats") 
+                narrationScript = dataSet.get("narrationScript") 
+                exportUrl = dataSet.get("exportUrl") 
+                chapterData = dataSet.get("chapterData") 
+                createdYMDHMS = dataSet.get("createdYMDHMS") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("filmID", "")
+
+                    tableName = comMysql.tablename_convertor_mgAnnualFilm()
+                    currDataList = comMysql.query_mgAnnualFilm(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if userID != currDataSet.get("userID") and userID:
+                                saveSet["userID"] = userID
+
+                            if filmYear != currDataSet.get("filmYear") and filmYear:
+                                saveSet["filmYear"] = filmYear
+
+                            if videoUrl != currDataSet.get("videoUrl") and videoUrl:
+                                saveSet["videoUrl"] = videoUrl
+
+                            if duration != currDataSet.get("duration"):
+                                saveSet["duration"] = duration
+
+                            if scenesData != currDataSet.get("scenesData") and scenesData:
+                                saveSet["scenesData"] = scenesData
+
+                            if resilienceScore != currDataSet.get("resilienceScore"):
+                                saveSet["resilienceScore"] = resilienceScore
+
+                            if headlineStats != currDataSet.get("headlineStats") and headlineStats:
+                                saveSet["headlineStats"] = headlineStats
+
+                            if narrationScript != currDataSet.get("narrationScript") and narrationScript:
+                                saveSet["narrationScript"] = narrationScript
+
+                            if exportUrl != currDataSet.get("exportUrl") and exportUrl:
+                                saveSet["exportUrl"] = exportUrl
+
+                            if chapterData != currDataSet.get("chapterData") and chapterData:
+                                saveSet["chapterData"] = chapterData
+
+                            if createdYMDHMS != currDataSet.get("createdYMDHMS") and createdYMDHMS:
+                                saveSet["createdYMDHMS"] = createdYMDHMS
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgAnnualFilm()
+                                rtn = comMysql.update_mgAnnualFilm(tableName,recID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMgannualfilmQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                filmID = dataSet.get("filmID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if filmID:
+                        indexKeyDataSet["filmID"] = filmID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgAnnualFilm()
+                            allDataList = comMysql.query_mgAnnualFilm(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if filmID:
+                                tableName = comMysql.tablename_convertor_mgAnnualFilm()
+                                currDataList = comMysql.query_mgAnnualFilm(tableName,filmID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgAnnualFilm()
+                                currDataList = comMysql.query_mgAnnualFilm(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["filmID"] = currDataSet.get("filmID","")
+                            aSet["userID"] = currDataSet.get("userID","")
+                            aSet["filmYear"] = currDataSet.get("filmYear","")
+                            aSet["videoUrl"] = currDataSet.get("videoUrl","")
+                            aSet["duration"] = currDataSet.get("duration","")
+                            aSet["scenesData"] = currDataSet.get("scenesData","")
+                            aSet["resilienceScore"] = currDataSet.get("resilienceScore","")
+                            aSet["headlineStats"] = currDataSet.get("headlineStats","")
+                            aSet["narrationScript"] = currDataSet.get("narrationScript","")
+                            aSet["exportUrl"] = currDataSet.get("exportUrl","")
+                            aSet["chapterData"] = currDataSet.get("chapterData","")
+                            aSet["createdYMDHMS"] = currDataSet.get("createdYMDHMS","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMgbadgedefAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["badgeID"] = dataSet.get("badgeID", "") 
+                    saveSet["badgeName"] = dataSet.get("badgeName", "") 
+                    saveSet["badgeIcon"] = dataSet.get("badgeIcon", "") 
+                    saveSet["description"] = dataSet.get("description", "") 
+                    saveSet["conditionType"] = dataSet.get("conditionType", "") 
+                    saveSet["conditionValue"] = dataSet.get("conditionValue", "") 
+                    saveSet["sortOrder"] = dataSet.get("sortOrder", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgBadgeDef()
+                    recID = comMysql.insert_mgBadgeDef(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMgbadgedefDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                badgeID = dataSet.get("badgeID", "")
+                tableName = comMysql.tablename_convertor_mgBadgeDef()
+                currDataList = comMysql.query_mgBadgeDef(tableName,badgeID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgBadgeDef(tableName,badgeID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMgbadgedefModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                badgeID = dataSet.get("badgeID") 
+                badgeName = dataSet.get("badgeName") 
+                badgeIcon = dataSet.get("badgeIcon") 
+                description = dataSet.get("description") 
+                conditionType = dataSet.get("conditionType") 
+                conditionValue = dataSet.get("conditionValue") 
+                sortOrder = dataSet.get("sortOrder") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("badgeID", "")
+
+                    tableName = comMysql.tablename_convertor_mgBadgeDef()
+                    currDataList = comMysql.query_mgBadgeDef(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if badgeID != currDataSet.get("badgeID") and badgeID:
+                                saveSet["badgeID"] = badgeID
+
+                            if badgeName != currDataSet.get("badgeName") and badgeName:
+                                saveSet["badgeName"] = badgeName
+
+                            if badgeIcon != currDataSet.get("badgeIcon") and badgeIcon:
+                                saveSet["badgeIcon"] = badgeIcon
+
+                            if description != currDataSet.get("description") and description:
+                                saveSet["description"] = description
+
+                            if conditionType != currDataSet.get("conditionType") and conditionType:
+                                saveSet["conditionType"] = conditionType
+
+                            if conditionValue != currDataSet.get("conditionValue"):
+                                saveSet["conditionValue"] = conditionValue
+
+                            if sortOrder != currDataSet.get("sortOrder"):
+                                saveSet["sortOrder"] = sortOrder
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgBadgeDef()
+                                rtn = comMysql.update_mgBadgeDef(tableName,badgeID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMgbadgedefQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                badgeID = dataSet.get("badgeID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if badgeID:
+                        indexKeyDataSet["badgeID"] = badgeID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgBadgeDef()
+                            allDataList = comMysql.query_mgBadgeDef(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if badgeID:
+                                tableName = comMysql.tablename_convertor_mgBadgeDef()
+                                currDataList = comMysql.query_mgBadgeDef(tableName,badgeID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgBadgeDef()
+                                currDataList = comMysql.query_mgBadgeDef(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["badgeID"] = currDataSet.get("badgeID","")
+                            aSet["badgeName"] = currDataSet.get("badgeName","")
+                            aSet["badgeIcon"] = currDataSet.get("badgeIcon","")
+                            aSet["description"] = currDataSet.get("description","")
+                            aSet["conditionType"] = currDataSet.get("conditionType","")
+                            aSet["conditionValue"] = currDataSet.get("conditionValue","")
+                            aSet["sortOrder"] = currDataSet.get("sortOrder","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMgfriendAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["userID"] = dataSet.get("userID", "") 
+                    saveSet["friendID"] = dataSet.get("friendID", "") 
+                    saveSet["status"] = dataSet.get("status", "") 
+                    saveSet["requestMsg"] = dataSet.get("requestMsg", "") 
+                    saveSet["createYMDHMS"] = dataSet.get("createYMDHMS", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgFriend()
+                    recID = comMysql.insert_mgFriend(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMgfriendDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                relationID = dataSet.get("relationID", "")
+                tableName = comMysql.tablename_convertor_mgFriend()
+                currDataList = comMysql.query_mgFriend(tableName,relationID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgFriend(tableName,relationID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMgfriendModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                userID = dataSet.get("userID") 
+                friendID = dataSet.get("friendID") 
+                status = dataSet.get("status") 
+                requestMsg = dataSet.get("requestMsg") 
+                createYMDHMS = dataSet.get("createYMDHMS") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("relationID", "")
+
+                    tableName = comMysql.tablename_convertor_mgFriend()
+                    currDataList = comMysql.query_mgFriend(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if userID != currDataSet.get("userID") and userID:
+                                saveSet["userID"] = userID
+
+                            if friendID != currDataSet.get("friendID") and friendID:
+                                saveSet["friendID"] = friendID
+
+                            if status != currDataSet.get("status") and status:
+                                saveSet["status"] = status
+
+                            if requestMsg != currDataSet.get("requestMsg") and requestMsg:
+                                saveSet["requestMsg"] = requestMsg
+
+                            if createYMDHMS != currDataSet.get("createYMDHMS") and createYMDHMS:
+                                saveSet["createYMDHMS"] = createYMDHMS
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgFriend()
+                                rtn = comMysql.update_mgFriend(tableName,recID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMgfriendQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                relationID = dataSet.get("relationID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if relationID:
+                        indexKeyDataSet["relationID"] = relationID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgFriend()
+                            allDataList = comMysql.query_mgFriend(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if relationID:
+                                tableName = comMysql.tablename_convertor_mgFriend()
+                                currDataList = comMysql.query_mgFriend(tableName,relationID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgFriend()
+                                currDataList = comMysql.query_mgFriend(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["relationID"] = currDataSet.get("relationID","")
+                            aSet["userID"] = currDataSet.get("userID","")
+                            aSet["friendID"] = currDataSet.get("friendID","")
+                            aSet["status"] = currDataSet.get("status","")
+                            aSet["requestMsg"] = currDataSet.get("requestMsg","")
+                            aSet["createYMDHMS"] = currDataSet.get("createYMDHMS","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMginvitelinkAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["userID"] = dataSet.get("userID", "") 
+                    saveSet["inviteCode"] = dataSet.get("inviteCode", "") 
+                    saveSet["usageCount"] = dataSet.get("usageCount", "") 
+                    saveSet["maxUsage"] = dataSet.get("maxUsage", "") 
+                    saveSet["expireDate"] = dataSet.get("expireDate", "") 
+                    saveSet["status"] = dataSet.get("status", "") 
+                    saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgInviteLink()
+                    recID = comMysql.insert_mgInviteLink(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMginvitelinkDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                inviteID = dataSet.get("inviteID", "")
+                tableName = comMysql.tablename_convertor_mgInviteLink()
+                currDataList = comMysql.query_mgInviteLink(tableName,inviteID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgInviteLink(tableName,inviteID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMginvitelinkModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                userID = dataSet.get("userID") 
+                inviteCode = dataSet.get("inviteCode") 
+                usageCount = dataSet.get("usageCount") 
+                maxUsage = dataSet.get("maxUsage") 
+                expireDate = dataSet.get("expireDate") 
+                status = dataSet.get("status") 
+                createdYMDHMS = dataSet.get("createdYMDHMS") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("inviteID", "")
+
+                    tableName = comMysql.tablename_convertor_mgInviteLink()
+                    currDataList = comMysql.query_mgInviteLink(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if userID != currDataSet.get("userID") and userID:
+                                saveSet["userID"] = userID
+
+                            if inviteCode != currDataSet.get("inviteCode") and inviteCode:
+                                saveSet["inviteCode"] = inviteCode
+
+                            if usageCount != currDataSet.get("usageCount"):
+                                saveSet["usageCount"] = usageCount
+
+                            if maxUsage != currDataSet.get("maxUsage"):
+                                saveSet["maxUsage"] = maxUsage
+
+                            if expireDate != currDataSet.get("expireDate") and expireDate:
+                                saveSet["expireDate"] = expireDate
+
+                            if status != currDataSet.get("status") and status:
+                                saveSet["status"] = status
+
+                            if createdYMDHMS != currDataSet.get("createdYMDHMS") and createdYMDHMS:
+                                saveSet["createdYMDHMS"] = createdYMDHMS
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgInviteLink()
+                                rtn = comMysql.update_mgInviteLink(tableName,recID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMginvitelinkQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                inviteID = dataSet.get("inviteID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if inviteID:
+                        indexKeyDataSet["inviteID"] = inviteID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgInviteLink()
+                            allDataList = comMysql.query_mgInviteLink(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if inviteID:
+                                tableName = comMysql.tablename_convertor_mgInviteLink()
+                                currDataList = comMysql.query_mgInviteLink(tableName,inviteID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgInviteLink()
+                                currDataList = comMysql.query_mgInviteLink(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["inviteID"] = currDataSet.get("inviteID","")
+                            aSet["userID"] = currDataSet.get("userID","")
+                            aSet["inviteCode"] = currDataSet.get("inviteCode","")
+                            aSet["usageCount"] = currDataSet.get("usageCount","")
+                            aSet["maxUsage"] = currDataSet.get("maxUsage","")
+                            aSet["expireDate"] = currDataSet.get("expireDate","")
+                            aSet["status"] = currDataSet.get("status","")
+                            aSet["createdYMDHMS"] = currDataSet.get("createdYMDHMS","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMgmoodguessAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["postID"] = dataSet.get("postID", "") 
+                    saveSet["guesserID"] = dataSet.get("guesserID", "") 
+                    saveSet["guessedEmoji"] = dataSet.get("guessedEmoji", "") 
+                    saveSet["isCorrect"] = dataSet.get("isCorrect", "") 
+                    saveSet["pointsEarned"] = dataSet.get("pointsEarned", "") 
+                    saveSet["guessYMDHMS"] = dataSet.get("guessYMDHMS", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgMoodGuess()
+                    recID = comMysql.insert_mgMoodGuess(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMgmoodguessDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                guessID = dataSet.get("guessID", "")
+                tableName = comMysql.tablename_convertor_mgMoodGuess()
+                currDataList = comMysql.query_mgMoodGuess(tableName,guessID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgMoodGuess(tableName,guessID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMgmoodguessModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                postID = dataSet.get("postID") 
+                guesserID = dataSet.get("guesserID") 
+                guessedEmoji = dataSet.get("guessedEmoji") 
+                isCorrect = dataSet.get("isCorrect") 
+                pointsEarned = dataSet.get("pointsEarned") 
+                guessYMDHMS = dataSet.get("guessYMDHMS") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("guessID", "")
+
+                    tableName = comMysql.tablename_convertor_mgMoodGuess()
+                    currDataList = comMysql.query_mgMoodGuess(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if postID != currDataSet.get("postID"):
+                                saveSet["postID"] = postID
+
+                            if guesserID != currDataSet.get("guesserID") and guesserID:
+                                saveSet["guesserID"] = guesserID
+
+                            if guessedEmoji != currDataSet.get("guessedEmoji") and guessedEmoji:
+                                saveSet["guessedEmoji"] = guessedEmoji
+
+                            if isCorrect != currDataSet.get("isCorrect") and isCorrect:
+                                saveSet["isCorrect"] = isCorrect
+
+                            if pointsEarned != currDataSet.get("pointsEarned"):
+                                saveSet["pointsEarned"] = pointsEarned
+
+                            if guessYMDHMS != currDataSet.get("guessYMDHMS") and guessYMDHMS:
+                                saveSet["guessYMDHMS"] = guessYMDHMS
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgMoodGuess()
+                                rtn = comMysql.update_mgMoodGuess(tableName,recID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMgmoodguessQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                guessID = dataSet.get("guessID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if guessID:
+                        indexKeyDataSet["guessID"] = guessID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgMoodGuess()
+                            allDataList = comMysql.query_mgMoodGuess(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if guessID:
+                                tableName = comMysql.tablename_convertor_mgMoodGuess()
+                                currDataList = comMysql.query_mgMoodGuess(tableName,guessID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgMoodGuess()
+                                currDataList = comMysql.query_mgMoodGuess(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["guessID"] = currDataSet.get("guessID","")
+                            aSet["postID"] = currDataSet.get("postID","")
+                            aSet["guesserID"] = currDataSet.get("guesserID","")
+                            aSet["guessedEmoji"] = currDataSet.get("guessedEmoji","")
+                            aSet["isCorrect"] = currDataSet.get("isCorrect","")
+                            aSet["pointsEarned"] = currDataSet.get("pointsEarned","")
+                            aSet["guessYMDHMS"] = currDataSet.get("guessYMDHMS","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMgmoodpostAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["userID"] = dataSet.get("userID", "") 
+                    saveSet["moodEmoji"] = dataSet.get("moodEmoji", "") 
+                    saveSet["intensity"] = dataSet.get("intensity", "") 
+                    saveSet["hintNote"] = dataSet.get("hintNote", "") 
+                    saveSet["isAnonymous"] = dataSet.get("isAnonymous", "") 
+                    saveSet["photoUrl"] = dataSet.get("photoUrl", "") 
+                    saveSet["thumbnailUrl"] = dataSet.get("thumbnailUrl", "") 
+                    saveSet["postDate"] = dataSet.get("postDate", "") 
+                    saveSet["postYMDHMS"] = dataSet.get("postYMDHMS", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgMoodPost()
+                    recID = comMysql.insert_mgMoodPost(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMgmoodpostDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                postID = dataSet.get("postID", "")
+                tableName = comMysql.tablename_convertor_mgMoodPost()
+                currDataList = comMysql.query_mgMoodPost(tableName,postID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgMoodPost(tableName,postID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMgmoodpostModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                userID = dataSet.get("userID") 
+                moodEmoji = dataSet.get("moodEmoji") 
+                intensity = dataSet.get("intensity") 
+                hintNote = dataSet.get("hintNote") 
+                isAnonymous = dataSet.get("isAnonymous") 
+                photoUrl = dataSet.get("photoUrl") 
+                thumbnailUrl = dataSet.get("thumbnailUrl") 
+                postDate = dataSet.get("postDate") 
+                postYMDHMS = dataSet.get("postYMDHMS") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("postID", "")
+
+                    tableName = comMysql.tablename_convertor_mgMoodPost()
+                    currDataList = comMysql.query_mgMoodPost(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if userID != currDataSet.get("userID") and userID:
+                                saveSet["userID"] = userID
+
+                            if moodEmoji != currDataSet.get("moodEmoji") and moodEmoji:
+                                saveSet["moodEmoji"] = moodEmoji
+
+                            if intensity != currDataSet.get("intensity"):
+                                saveSet["intensity"] = intensity
+
+                            if hintNote != currDataSet.get("hintNote") and hintNote:
+                                saveSet["hintNote"] = hintNote
+
+                            if isAnonymous != currDataSet.get("isAnonymous") and isAnonymous:
+                                saveSet["isAnonymous"] = isAnonymous
+
+                            if photoUrl != currDataSet.get("photoUrl") and photoUrl:
+                                saveSet["photoUrl"] = photoUrl
+
+                            if thumbnailUrl != currDataSet.get("thumbnailUrl") and thumbnailUrl:
+                                saveSet["thumbnailUrl"] = thumbnailUrl
+
+                            if postDate != currDataSet.get("postDate") and postDate:
+                                saveSet["postDate"] = postDate
+
+                            if postYMDHMS != currDataSet.get("postYMDHMS") and postYMDHMS:
+                                saveSet["postYMDHMS"] = postYMDHMS
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgMoodPost()
+                                rtn = comMysql.update_mgMoodPost(tableName,recID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMgmoodpostQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                postID = dataSet.get("postID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if postID:
+                        indexKeyDataSet["postID"] = postID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgMoodPost()
+                            allDataList = comMysql.query_mgMoodPost(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if postID:
+                                tableName = comMysql.tablename_convertor_mgMoodPost()
+                                currDataList = comMysql.query_mgMoodPost(tableName,postID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgMoodPost()
+                                currDataList = comMysql.query_mgMoodPost(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["postID"] = currDataSet.get("postID","")
+                            aSet["userID"] = currDataSet.get("userID","")
+                            aSet["moodEmoji"] = currDataSet.get("moodEmoji","")
+                            aSet["intensity"] = currDataSet.get("intensity","")
+                            aSet["hintNote"] = currDataSet.get("hintNote","")
+                            aSet["isAnonymous"] = currDataSet.get("isAnonymous","")
+                            aSet["photoUrl"] = currDataSet.get("photoUrl","")
+                            aSet["thumbnailUrl"] = currDataSet.get("thumbnailUrl","")
+                            aSet["postDate"] = currDataSet.get("postDate","")
+                            aSet["postYMDHMS"] = currDataSet.get("postYMDHMS","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMgmoodreactionAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["postID"] = dataSet.get("postID", "") 
+                    saveSet["userID"] = dataSet.get("userID", "") 
+                    saveSet["reactionType"] = dataSet.get("reactionType", "") 
+                    saveSet["reactionYMDHMS"] = dataSet.get("reactionYMDHMS", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgMoodReaction()
+                    recID = comMysql.insert_mgMoodReaction(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMgmoodreactionDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                reactionID = dataSet.get("reactionID", "")
+                tableName = comMysql.tablename_convertor_mgMoodReaction()
+                currDataList = comMysql.query_mgMoodReaction(tableName,reactionID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgMoodReaction(tableName,reactionID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMgmoodreactionModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                postID = dataSet.get("postID") 
+                userID = dataSet.get("userID") 
+                reactionType = dataSet.get("reactionType") 
+                reactionYMDHMS = dataSet.get("reactionYMDHMS") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("reactionID", "")
+
+                    tableName = comMysql.tablename_convertor_mgMoodReaction()
+                    currDataList = comMysql.query_mgMoodReaction(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if postID != currDataSet.get("postID"):
+                                saveSet["postID"] = postID
+
+                            if userID != currDataSet.get("userID") and userID:
+                                saveSet["userID"] = userID
+
+                            if reactionType != currDataSet.get("reactionType") and reactionType:
+                                saveSet["reactionType"] = reactionType
+
+                            if reactionYMDHMS != currDataSet.get("reactionYMDHMS") and reactionYMDHMS:
+                                saveSet["reactionYMDHMS"] = reactionYMDHMS
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgMoodReaction()
+                                rtn = comMysql.update_mgMoodReaction(tableName,recID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMgmoodreactionQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                reactionID = dataSet.get("reactionID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if reactionID:
+                        indexKeyDataSet["reactionID"] = reactionID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgMoodReaction()
+                            allDataList = comMysql.query_mgMoodReaction(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if reactionID:
+                                tableName = comMysql.tablename_convertor_mgMoodReaction()
+                                currDataList = comMysql.query_mgMoodReaction(tableName,reactionID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgMoodReaction()
+                                currDataList = comMysql.query_mgMoodReaction(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["reactionID"] = currDataSet.get("reactionID","")
+                            aSet["postID"] = currDataSet.get("postID","")
+                            aSet["userID"] = currDataSet.get("userID","")
+                            aSet["reactionType"] = currDataSet.get("reactionType","")
+                            aSet["reactionYMDHMS"] = currDataSet.get("reactionYMDHMS","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMgquarterlyreportAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["userID"] = dataSet.get("userID", "") 
+                    saveSet["quarterStart"] = dataSet.get("quarterStart", "") 
+                    saveSet["quarterEnd"] = dataSet.get("quarterEnd", "") 
+                    saveSet["avgMoodScore"] = dataSet.get("avgMoodScore", "") 
+                    saveSet["positiveDaysPct"] = dataSet.get("positiveDaysPct", "") 
+                    saveSet["maxStreak"] = dataSet.get("maxStreak", "") 
+                    saveSet["loggingRate"] = dataSet.get("loggingRate", "") 
+                    saveSet["emojiBreakdown"] = dataSet.get("emojiBreakdown", "") 
+                    saveSet["monthlyTrend"] = dataSet.get("monthlyTrend", "") 
+                    saveSet["diagnosisFindings"] = dataSet.get("diagnosisFindings", "") 
+                    saveSet["actionCards"] = dataSet.get("actionCards", "") 
+                    saveSet["aiModelVersion"] = dataSet.get("aiModelVersion", "") 
+                    saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgQuarterlyReport()
+                    recID = comMysql.insert_mgQuarterlyReport(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMgquarterlyreportDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                reportID = dataSet.get("reportID", "")
+                tableName = comMysql.tablename_convertor_mgQuarterlyReport()
+                currDataList = comMysql.query_mgQuarterlyReport(tableName,reportID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgQuarterlyReport(tableName,reportID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMgquarterlyreportModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                userID = dataSet.get("userID") 
+                quarterStart = dataSet.get("quarterStart") 
+                quarterEnd = dataSet.get("quarterEnd") 
+                avgMoodScore = dataSet.get("avgMoodScore") 
+                positiveDaysPct = dataSet.get("positiveDaysPct") 
+                maxStreak = dataSet.get("maxStreak") 
+                loggingRate = dataSet.get("loggingRate") 
+                emojiBreakdown = dataSet.get("emojiBreakdown") 
+                monthlyTrend = dataSet.get("monthlyTrend") 
+                diagnosisFindings = dataSet.get("diagnosisFindings") 
+                actionCards = dataSet.get("actionCards") 
+                aiModelVersion = dataSet.get("aiModelVersion") 
+                createdYMDHMS = dataSet.get("createdYMDHMS") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("reportID", "")
+
+                    tableName = comMysql.tablename_convertor_mgQuarterlyReport()
+                    currDataList = comMysql.query_mgQuarterlyReport(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if userID != currDataSet.get("userID") and userID:
+                                saveSet["userID"] = userID
+
+                            if quarterStart != currDataSet.get("quarterStart") and quarterStart:
+                                saveSet["quarterStart"] = quarterStart
+
+                            if quarterEnd != currDataSet.get("quarterEnd") and quarterEnd:
+                                saveSet["quarterEnd"] = quarterEnd
+
+                            if avgMoodScore != currDataSet.get("avgMoodScore"):
+                                saveSet["avgMoodScore"] = avgMoodScore
+
+                            if positiveDaysPct != currDataSet.get("positiveDaysPct"):
+                                saveSet["positiveDaysPct"] = positiveDaysPct
+
+                            if maxStreak != currDataSet.get("maxStreak"):
+                                saveSet["maxStreak"] = maxStreak
+
+                            if loggingRate != currDataSet.get("loggingRate"):
+                                saveSet["loggingRate"] = loggingRate
+
+                            if emojiBreakdown != currDataSet.get("emojiBreakdown") and emojiBreakdown:
+                                saveSet["emojiBreakdown"] = emojiBreakdown
+
+                            if monthlyTrend != currDataSet.get("monthlyTrend") and monthlyTrend:
+                                saveSet["monthlyTrend"] = monthlyTrend
+
+                            if diagnosisFindings != currDataSet.get("diagnosisFindings") and diagnosisFindings:
+                                saveSet["diagnosisFindings"] = diagnosisFindings
+
+                            if actionCards != currDataSet.get("actionCards") and actionCards:
+                                saveSet["actionCards"] = actionCards
+
+                            if aiModelVersion != currDataSet.get("aiModelVersion") and aiModelVersion:
+                                saveSet["aiModelVersion"] = aiModelVersion
+
+                            if createdYMDHMS != currDataSet.get("createdYMDHMS") and createdYMDHMS:
+                                saveSet["createdYMDHMS"] = createdYMDHMS
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgQuarterlyReport()
+                                rtn = comMysql.update_mgQuarterlyReport(tableName,recID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMgquarterlyreportQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                reportID = dataSet.get("reportID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if reportID:
+                        indexKeyDataSet["reportID"] = reportID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgQuarterlyReport()
+                            allDataList = comMysql.query_mgQuarterlyReport(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if reportID:
+                                tableName = comMysql.tablename_convertor_mgQuarterlyReport()
+                                currDataList = comMysql.query_mgQuarterlyReport(tableName,reportID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgQuarterlyReport()
+                                currDataList = comMysql.query_mgQuarterlyReport(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["reportID"] = currDataSet.get("reportID","")
+                            aSet["userID"] = currDataSet.get("userID","")
+                            aSet["quarterStart"] = currDataSet.get("quarterStart","")
+                            aSet["quarterEnd"] = currDataSet.get("quarterEnd","")
+                            aSet["avgMoodScore"] = currDataSet.get("avgMoodScore","")
+                            aSet["positiveDaysPct"] = currDataSet.get("positiveDaysPct","")
+                            aSet["maxStreak"] = currDataSet.get("maxStreak","")
+                            aSet["loggingRate"] = currDataSet.get("loggingRate","")
+                            aSet["emojiBreakdown"] = currDataSet.get("emojiBreakdown","")
+                            aSet["monthlyTrend"] = currDataSet.get("monthlyTrend","")
+                            aSet["diagnosisFindings"] = currDataSet.get("diagnosisFindings","")
+                            aSet["actionCards"] = currDataSet.get("actionCards","")
+                            aSet["aiModelVersion"] = currDataSet.get("aiModelVersion","")
+                            aSet["createdYMDHMS"] = currDataSet.get("createdYMDHMS","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMgsystemconfigAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["configID"] = dataSet.get("configID", "") 
+                    saveSet["configValue"] = dataSet.get("configValue", "") 
+                    saveSet["configType"] = dataSet.get("configType", "") 
+                    saveSet["description"] = dataSet.get("description", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgSystemConfig()
+                    recID = comMysql.insert_mgSystemConfig(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMgsystemconfigDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                configID = dataSet.get("configID", "")
+                tableName = comMysql.tablename_convertor_mgSystemConfig()
+                currDataList = comMysql.query_mgSystemConfig(tableName,configID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgSystemConfig(tableName,configID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMgsystemconfigModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                configID = dataSet.get("configID") 
+                configValue = dataSet.get("configValue") 
+                configType = dataSet.get("configType") 
+                description = dataSet.get("description") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("configID", "")
+
+                    tableName = comMysql.tablename_convertor_mgSystemConfig()
+                    currDataList = comMysql.query_mgSystemConfig(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if configID != currDataSet.get("configID") and configID:
+                                saveSet["configID"] = configID
+
+                            if configValue != currDataSet.get("configValue") and configValue:
+                                saveSet["configValue"] = configValue
+
+                            if configType != currDataSet.get("configType") and configType:
+                                saveSet["configType"] = configType
+
+                            if description != currDataSet.get("description") and description:
+                                saveSet["description"] = description
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgSystemConfig()
+                                rtn = comMysql.update_mgSystemConfig(tableName,configID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMgsystemconfigQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                configID = dataSet.get("configID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if configID:
+                        indexKeyDataSet["configID"] = configID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgSystemConfig()
+                            allDataList = comMysql.query_mgSystemConfig(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if configID:
+                                tableName = comMysql.tablename_convertor_mgSystemConfig()
+                                currDataList = comMysql.query_mgSystemConfig(tableName,configID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgSystemConfig()
+                                currDataList = comMysql.query_mgSystemConfig(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["configID"] = currDataSet.get("configID","")
+                            aSet["configValue"] = currDataSet.get("configValue","")
+                            aSet["configType"] = currDataSet.get("configType","")
+                            aSet["description"] = currDataSet.get("description","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMgtcmdiagnosisAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["userID"] = dataSet.get("userID", "") 
+                    saveSet["quarterStart"] = dataSet.get("quarterStart", "") 
+                    saveSet["quarterEnd"] = dataSet.get("quarterEnd", "") 
+                    saveSet["primaryPattern"] = dataSet.get("primaryPattern", "") 
+                    saveSet["secondaryPattern"] = dataSet.get("secondaryPattern", "") 
+                    saveSet["radarChartData"] = dataSet.get("radarChartData", "") 
+                    saveSet["dietPlan"] = dataSet.get("dietPlan", "") 
+                    saveSet["sleepPlan"] = dataSet.get("sleepPlan", "") 
+                    saveSet["bodyClockData"] = dataSet.get("bodyClockData", "") 
+                    saveSet["weeklyPlan"] = dataSet.get("weeklyPlan", "") 
+                    saveSet["aiModelVersion"] = dataSet.get("aiModelVersion", "") 
+                    saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgTcmDiagnosis()
+                    recID = comMysql.insert_mgTcmDiagnosis(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMgtcmdiagnosisDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                tcmID = dataSet.get("tcmID", "")
+                tableName = comMysql.tablename_convertor_mgTcmDiagnosis()
+                currDataList = comMysql.query_mgTcmDiagnosis(tableName,tcmID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgTcmDiagnosis(tableName,tcmID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMgtcmdiagnosisModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                userID = dataSet.get("userID") 
+                quarterStart = dataSet.get("quarterStart") 
+                quarterEnd = dataSet.get("quarterEnd") 
+                primaryPattern = dataSet.get("primaryPattern") 
+                secondaryPattern = dataSet.get("secondaryPattern") 
+                radarChartData = dataSet.get("radarChartData") 
+                dietPlan = dataSet.get("dietPlan") 
+                sleepPlan = dataSet.get("sleepPlan") 
+                bodyClockData = dataSet.get("bodyClockData") 
+                weeklyPlan = dataSet.get("weeklyPlan") 
+                aiModelVersion = dataSet.get("aiModelVersion") 
+                createdYMDHMS = dataSet.get("createdYMDHMS") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("tcmID", "")
+
+                    tableName = comMysql.tablename_convertor_mgTcmDiagnosis()
+                    currDataList = comMysql.query_mgTcmDiagnosis(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if userID != currDataSet.get("userID") and userID:
+                                saveSet["userID"] = userID
+
+                            if quarterStart != currDataSet.get("quarterStart") and quarterStart:
+                                saveSet["quarterStart"] = quarterStart
+
+                            if quarterEnd != currDataSet.get("quarterEnd") and quarterEnd:
+                                saveSet["quarterEnd"] = quarterEnd
+
+                            if primaryPattern != currDataSet.get("primaryPattern") and primaryPattern:
+                                saveSet["primaryPattern"] = primaryPattern
+
+                            if secondaryPattern != currDataSet.get("secondaryPattern") and secondaryPattern:
+                                saveSet["secondaryPattern"] = secondaryPattern
+
+                            if radarChartData != currDataSet.get("radarChartData") and radarChartData:
+                                saveSet["radarChartData"] = radarChartData
+
+                            if dietPlan != currDataSet.get("dietPlan") and dietPlan:
+                                saveSet["dietPlan"] = dietPlan
+
+                            if sleepPlan != currDataSet.get("sleepPlan") and sleepPlan:
+                                saveSet["sleepPlan"] = sleepPlan
+
+                            if bodyClockData != currDataSet.get("bodyClockData") and bodyClockData:
+                                saveSet["bodyClockData"] = bodyClockData
+
+                            if weeklyPlan != currDataSet.get("weeklyPlan") and weeklyPlan:
+                                saveSet["weeklyPlan"] = weeklyPlan
+
+                            if aiModelVersion != currDataSet.get("aiModelVersion") and aiModelVersion:
+                                saveSet["aiModelVersion"] = aiModelVersion
+
+                            if createdYMDHMS != currDataSet.get("createdYMDHMS") and createdYMDHMS:
+                                saveSet["createdYMDHMS"] = createdYMDHMS
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgTcmDiagnosis()
+                                rtn = comMysql.update_mgTcmDiagnosis(tableName,recID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMgtcmdiagnosisQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                tcmID = dataSet.get("tcmID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if tcmID:
+                        indexKeyDataSet["tcmID"] = tcmID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgTcmDiagnosis()
+                            allDataList = comMysql.query_mgTcmDiagnosis(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if tcmID:
+                                tableName = comMysql.tablename_convertor_mgTcmDiagnosis()
+                                currDataList = comMysql.query_mgTcmDiagnosis(tableName,tcmID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgTcmDiagnosis()
+                                currDataList = comMysql.query_mgTcmDiagnosis(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["tcmID"] = currDataSet.get("tcmID","")
+                            aSet["userID"] = currDataSet.get("userID","")
+                            aSet["quarterStart"] = currDataSet.get("quarterStart","")
+                            aSet["quarterEnd"] = currDataSet.get("quarterEnd","")
+                            aSet["primaryPattern"] = currDataSet.get("primaryPattern","")
+                            aSet["secondaryPattern"] = currDataSet.get("secondaryPattern","")
+                            aSet["radarChartData"] = currDataSet.get("radarChartData","")
+                            aSet["dietPlan"] = currDataSet.get("dietPlan","")
+                            aSet["sleepPlan"] = currDataSet.get("sleepPlan","")
+                            aSet["bodyClockData"] = currDataSet.get("bodyClockData","")
+                            aSet["weeklyPlan"] = currDataSet.get("weeklyPlan","")
+                            aSet["aiModelVersion"] = currDataSet.get("aiModelVersion","")
+                            aSet["createdYMDHMS"] = currDataSet.get("createdYMDHMS","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMguserbadgeAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["userID"] = dataSet.get("userID", "") 
+                    saveSet["badgeID"] = dataSet.get("badgeID", "") 
+                    saveSet["earnYMDHMS"] = dataSet.get("earnYMDHMS", "") 
+                    saveSet["isWearing"] = dataSet.get("isWearing", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgUserBadge()
+                    recID = comMysql.insert_mgUserBadge(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMguserbadgeDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                recordID = dataSet.get("recordID", "")
+                tableName = comMysql.tablename_convertor_mgUserBadge()
+                currDataList = comMysql.query_mgUserBadge(tableName,recordID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgUserBadge(tableName,recordID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMguserbadgeModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                userID = dataSet.get("userID") 
+                badgeID = dataSet.get("badgeID") 
+                earnYMDHMS = dataSet.get("earnYMDHMS") 
+                isWearing = dataSet.get("isWearing") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("recordID", "")
+
+                    tableName = comMysql.tablename_convertor_mgUserBadge()
+                    currDataList = comMysql.query_mgUserBadge(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if userID != currDataSet.get("userID") and userID:
+                                saveSet["userID"] = userID
+
+                            if badgeID != currDataSet.get("badgeID") and badgeID:
+                                saveSet["badgeID"] = badgeID
+
+                            if earnYMDHMS != currDataSet.get("earnYMDHMS") and earnYMDHMS:
+                                saveSet["earnYMDHMS"] = earnYMDHMS
+
+                            if isWearing != currDataSet.get("isWearing") and isWearing:
+                                saveSet["isWearing"] = isWearing
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgUserBadge()
+                                rtn = comMysql.update_mgUserBadge(tableName,recID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMguserbadgeQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                recordID = dataSet.get("recordID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if recordID:
+                        indexKeyDataSet["recordID"] = recordID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgUserBadge()
+                            allDataList = comMysql.query_mgUserBadge(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if recordID:
+                                tableName = comMysql.tablename_convertor_mgUserBadge()
+                                currDataList = comMysql.query_mgUserBadge(tableName,recordID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgUserBadge()
+                                currDataList = comMysql.query_mgUserBadge(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["recordID"] = currDataSet.get("recordID","")
+                            aSet["userID"] = currDataSet.get("userID","")
+                            aSet["badgeID"] = currDataSet.get("badgeID","")
+                            aSet["earnYMDHMS"] = currDataSet.get("earnYMDHMS","")
+                            aSet["isWearing"] = currDataSet.get("isWearing","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMguserstatsAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["userID"] = dataSet.get("userID", "") 
+                    saveSet["totalScore"] = dataSet.get("totalScore", "") 
+                    saveSet["weeklyScore"] = dataSet.get("weeklyScore", "") 
+                    saveSet["streakDays"] = dataSet.get("streakDays", "") 
+                    saveSet["longestStreak"] = dataSet.get("longestStreak", "") 
+                    saveSet["totalPosts"] = dataSet.get("totalPosts", "") 
+                    saveSet["totalCorrectGuesses"] = dataSet.get("totalCorrectGuesses", "") 
+                    saveSet["totalGuesses"] = dataSet.get("totalGuesses", "") 
+                    saveSet["weeklyRank"] = dataSet.get("weeklyRank", "") 
+                    saveSet["lastPostDate"] = dataSet.get("lastPostDate", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgUserStats()
+                    recID = comMysql.insert_mgUserStats(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMguserstatsDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                userID = dataSet.get("userID", "")
+                tableName = comMysql.tablename_convertor_mgUserStats()
+                currDataList = comMysql.query_mgUserStats(tableName,userID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgUserStats(tableName,userID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMguserstatsModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                userID = dataSet.get("userID") 
+                totalScore = dataSet.get("totalScore") 
+                weeklyScore = dataSet.get("weeklyScore") 
+                streakDays = dataSet.get("streakDays") 
+                longestStreak = dataSet.get("longestStreak") 
+                totalPosts = dataSet.get("totalPosts") 
+                totalCorrectGuesses = dataSet.get("totalCorrectGuesses") 
+                totalGuesses = dataSet.get("totalGuesses") 
+                weeklyRank = dataSet.get("weeklyRank") 
+                lastPostDate = dataSet.get("lastPostDate") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("userID", "")
+
+                    tableName = comMysql.tablename_convertor_mgUserStats()
+                    currDataList = comMysql.query_mgUserStats(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if userID != currDataSet.get("userID") and userID:
+                                saveSet["userID"] = userID
+
+                            if totalScore != currDataSet.get("totalScore"):
+                                saveSet["totalScore"] = totalScore
+
+                            if weeklyScore != currDataSet.get("weeklyScore"):
+                                saveSet["weeklyScore"] = weeklyScore
+
+                            if streakDays != currDataSet.get("streakDays"):
+                                saveSet["streakDays"] = streakDays
+
+                            if longestStreak != currDataSet.get("longestStreak"):
+                                saveSet["longestStreak"] = longestStreak
+
+                            if totalPosts != currDataSet.get("totalPosts"):
+                                saveSet["totalPosts"] = totalPosts
+
+                            if totalCorrectGuesses != currDataSet.get("totalCorrectGuesses"):
+                                saveSet["totalCorrectGuesses"] = totalCorrectGuesses
+
+                            if totalGuesses != currDataSet.get("totalGuesses"):
+                                saveSet["totalGuesses"] = totalGuesses
+
+                            if weeklyRank != currDataSet.get("weeklyRank"):
+                                saveSet["weeklyRank"] = weeklyRank
+
+                            if lastPostDate != currDataSet.get("lastPostDate") and lastPostDate:
+                                saveSet["lastPostDate"] = lastPostDate
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgUserStats()
+                                rtn = comMysql.update_mgUserStats(tableName,userID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMguserstatsQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                userID = dataSet.get("userID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if userID:
+                        indexKeyDataSet["userID"] = userID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgUserStats()
+                            allDataList = comMysql.query_mgUserStats(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if userID:
+                                tableName = comMysql.tablename_convertor_mgUserStats()
+                                currDataList = comMysql.query_mgUserStats(tableName,userID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgUserStats()
+                                currDataList = comMysql.query_mgUserStats(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["userID"] = currDataSet.get("userID","")
+                            aSet["totalScore"] = currDataSet.get("totalScore","")
+                            aSet["weeklyScore"] = currDataSet.get("weeklyScore","")
+                            aSet["streakDays"] = currDataSet.get("streakDays","")
+                            aSet["longestStreak"] = currDataSet.get("longestStreak","")
+                            aSet["totalPosts"] = currDataSet.get("totalPosts","")
+                            aSet["totalCorrectGuesses"] = currDataSet.get("totalCorrectGuesses","")
+                            aSet["totalGuesses"] = currDataSet.get("totalGuesses","")
+                            aSet["weeklyRank"] = currDataSet.get("weeklyRank","")
+                            aSet["lastPostDate"] = currDataSet.get("lastPostDate","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+
+
+#Server REST增加代码
+def funcMgweeklyreelAdd(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+                if dataValidFlag:
+                    saveSet = {}
+                    saveSet["userID"] = dataSet.get("userID", "") 
+                    saveSet["weekStart"] = dataSet.get("weekStart", "") 
+                    saveSet["weekEnd"] = dataSet.get("weekEnd", "") 
+                    saveSet["videoUrl"] = dataSet.get("videoUrl", "") 
+                    saveSet["gifUrl"] = dataSet.get("gifUrl", "") 
+                    saveSet["daysTracked"] = dataSet.get("daysTracked", "") 
+                    saveSet["topMood"] = dataSet.get("topMood", "") 
+                    saveSet["avgIntensity"] = dataSet.get("avgIntensity", "") 
+                    saveSet["shareUrl"] = dataSet.get("shareUrl", "") 
+                    saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+                    saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+                    saveSet["regID"] = loginID
+                    saveSet["regYMDHMS"] = misc.getTime()
+
+                    tableName = comMysql.tablename_convertor_mgWeeklyReel()
+                    recID = comMysql.insert_mgWeeklyReel(tableName,saveSet)
+                    rtnData["recID"] = str(recID)
+
+                    if recID <= 0:
+                        #记录添加失败
+                        errCode = "CG"
+                        _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
+                    else:
+                        if _DEBUG:
+                            pass
+                            _LOG.info(f"D: recID:{recID}")
+
+                    result = rtnData
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST删除代码
+def funcMgweeklyreelDel(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+            #权限检查
+
+            if errCode == "B0": #
+                reelID = dataSet.get("reelID", "")
+                tableName = comMysql.tablename_convertor_mgWeeklyReel()
+                currDataList = comMysql.query_mgWeeklyReel(tableName,reelID)
+                if len(currDataList) == 1:
+                    saveSet = {}
+                    saveSet["modifyID"] = loginID
+                    saveSet["modifyYMDHMS"] = misc.getTime()
+                    #saveSet["delFlag"] = "1"
+
+                    rtn = comMysql.delete_mgWeeklyReel(tableName,reelID)
+                    rtnData["rtn"] = str(rtn)
+
+                    if _DEBUG:
+                        _LOG.info(f"D: rtn:{rtn}")
+
+                    result = rtnData
+
+                else:
+                    errCode = "CB"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST修改代码
+def funcMgweeklyreelModify(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查/功能检测
+
+            if errCode == "B0": #
+                #data validation check
+                dataValidFlag = True
+
+                userID = dataSet.get("userID") 
+                weekStart = dataSet.get("weekStart") 
+                weekEnd = dataSet.get("weekEnd") 
+                videoUrl = dataSet.get("videoUrl") 
+                gifUrl = dataSet.get("gifUrl") 
+                daysTracked = dataSet.get("daysTracked") 
+                topMood = dataSet.get("topMood") 
+                avgIntensity = dataSet.get("avgIntensity") 
+                shareUrl = dataSet.get("shareUrl") 
+                createdYMDHMS = dataSet.get("createdYMDHMS") 
+                delFlag = dataSet.get("delFlag") 
+                #data valid 检查
+
+                if dataValidFlag:
+                    #当前记录获取
+                    recID = dataSet.get("reelID", "")
+
+                    tableName = comMysql.tablename_convertor_mgWeeklyReel()
+                    currDataList = comMysql.query_mgWeeklyReel(tableName,recID)
+
+                    if len(currDataList) == 1:
+                        currDataSet = currDataList[0]
+
+                        #权限或其他检查
+                        if errCode == "B0": #
+
+                            saveSet = {}
+
+                            if userID != currDataSet.get("userID") and userID:
+                                saveSet["userID"] = userID
+
+                            if weekStart != currDataSet.get("weekStart") and weekStart:
+                                saveSet["weekStart"] = weekStart
+
+                            if weekEnd != currDataSet.get("weekEnd") and weekEnd:
+                                saveSet["weekEnd"] = weekEnd
+
+                            if videoUrl != currDataSet.get("videoUrl") and videoUrl:
+                                saveSet["videoUrl"] = videoUrl
+
+                            if gifUrl != currDataSet.get("gifUrl") and gifUrl:
+                                saveSet["gifUrl"] = gifUrl
+
+                            if daysTracked != currDataSet.get("daysTracked"):
+                                saveSet["daysTracked"] = daysTracked
+
+                            if topMood != currDataSet.get("topMood") and topMood:
+                                saveSet["topMood"] = topMood
+
+                            if avgIntensity != currDataSet.get("avgIntensity"):
+                                saveSet["avgIntensity"] = avgIntensity
+
+                            if shareUrl != currDataSet.get("shareUrl") and shareUrl:
+                                saveSet["shareUrl"] = shareUrl
+
+                            if createdYMDHMS != currDataSet.get("createdYMDHMS") and createdYMDHMS:
+                                saveSet["createdYMDHMS"] = createdYMDHMS
+
+                            if delFlag != currDataSet.get("delFlag") and delFlag:
+                                saveSet["delFlag"] = delFlag
+
+                            if saveSet:
+                                #saveSet["delFlag"] = "0"
+                                saveSet["modifyID"] = loginID
+                                saveSet["modifyYMDHMS"] = misc.getTime()
+
+                                #保存数据
+                                tableName = comMysql.tablename_convertor_mgWeeklyReel()
+                                rtn = comMysql.update_mgWeeklyReel(tableName,recID,saveSet)
+                                rtnData["rtn"] = str(rtn)
+
+                                if rtn < 0:
+                                    _LOG.warning(f"D: rtn:{rtn},saveSet:{saveSet}")
+                                else:
+                                    if _DEBUG:
+                                        pass
+                                        _LOG.info(f"D: rtn:{rtn}")
+
+                                result = rtnData
+
+                        else:
+                            #BT
+                            errCode = "BT"
+
+                    else:
+                        #CB
+                        errCode = "CB"
+
+                else:
+                    #data invalid
+                    errCode = "BA"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+#Server REST查询代码
+def funcMgweeklyreelQry(CMD,dataSet,sessionIDSet):
+    result = {}
+    errCode = "B0"
+    rtnCMD = CMD
+    rtnField = ""
+    rtnData = {}
+
+    dataValidFlag = True #数据是否有效的标志
+    rtnErrMsgList = [] #数据错误原因
+
+    try:
+
+        lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
+        msgKey = "applicationMsgKey"
+        openID = sessionIDSet.get("openID", "")
+        roleName = sessionIDSet.get("roleName", "")
+        tempUserID = sessionIDSet.get("loginID", "")
+
+        if tempUserID != "":
+            loginID = tempUserID
+
+            #权限检查
+
+            if errCode == "B0": #
+                #获取查询输入参数
+                reelID = dataSet.get("reelID", "")
+
+                #houseID = dataSet.get("houseID", "")
+
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #是否强制查询(刷新)标记
+
+                searchOption = dataSet.get("searchOption")
+
+                mode = dataSet.get("mode", "full")
+
+                #limitNum = dataSet.get("limitNum",0)
+
+                #权限检查/功能检测
+
+                rightCheckFlag = True
+
+                if rightCheckFlag:
+
+                    #生成indexKey
+                    indexKeyDataSet = {} #查询生成index的因素
+                    if reelID:
+                        indexKeyDataSet["reelID"] = reelID
+                    if searchOption:
+                        indexKeyDataSet["searchOption"] = searchOption
+                    if mode:
+                        indexKeyDataSet["mode"] = mode
+
+                    #if limitNum:
+                        #indexKeyDataSet["limitNum"] = limitNum
+
+                    sessionID = sessionIDSet.get("sessionID", "")
+                    indexKey = genBufferIndexKey(CMD, sessionID, indexKeyDataSet) 
+                    beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
+                    endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
+
+                    #判断数据是否在缓冲区:
+                    if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
+
+                        if searchOption:
+                            currDataList = []
+                            tableName = comMysql.tablename_convertor_mgWeeklyReel()
+                            allDataList = comMysql.query_mgWeeklyReel(tableName,mode = mode)
+                            allowList = ["description", "label"] #筛选字段
+                            serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
+                            if serachResultSet["rtn"] == "B0":
+                                currDataList = serachResultSet.get("data", [])
+                        else:
+                            if reelID:
+                                tableName = comMysql.tablename_convertor_mgWeeklyReel()
+                                currDataList = comMysql.query_mgWeeklyReel(tableName,reelID,mode = mode)
+                            else:
+                                tableName = comMysql.tablename_convertor_mgWeeklyReel()
+                                currDataList = comMysql.query_mgWeeklyReel(tableName)
+
+                        dataList = []
+
+                        for currDataSet in currDataList:
+                            aSet = {}
+
+                            #需要把文件转移到public domain
+                            #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
+                            #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
+
+                            #if mode == "full":
+                                #aSet["houseID"] = currDataSet.get("houseID", "")
+
+                            aSet["reelID"] = currDataSet.get("reelID","")
+                            aSet["userID"] = currDataSet.get("userID","")
+                            aSet["weekStart"] = currDataSet.get("weekStart","")
+                            aSet["weekEnd"] = currDataSet.get("weekEnd","")
+                            aSet["videoUrl"] = currDataSet.get("videoUrl","")
+                            aSet["gifUrl"] = currDataSet.get("gifUrl","")
+                            aSet["daysTracked"] = currDataSet.get("daysTracked","")
+                            aSet["topMood"] = currDataSet.get("topMood","")
+                            aSet["avgIntensity"] = currDataSet.get("avgIntensity","")
+                            aSet["shareUrl"] = currDataSet.get("shareUrl","")
+                            aSet["createdYMDHMS"] = currDataSet.get("createdYMDHMS","")
+                            aSet["regID"] = currDataSet.get("regID","")
+                            aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
+                            aSet["modifyID"] = currDataSet.get("modifyID","")
+                            aSet["modifyYMDHMS"] = currDataSet.get("modifyYMDHMS","")
+                            aSet["delFlag"] = currDataSet.get("delFlag","")
+
+                            dataList.append(aSet)
+
+                        #临时缓存机制,改进型, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #存放数据到临时缓冲区去
+
+                    rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
+
+                    #rtnData["limitNum"] = limitNum
+
+                    result = rtnData
+
+                else:
+                    errCode = "BT"
+
+        else:
+            errCode = "B8"
+
+        rtnCMD = CMD
+        rtnSet = comFC.rtnMSG(errCode,rtnField, lang, msgKey)
+        result["CMD"] = rtnCMD
+        result["msgKey"] = msgKey
+        result["MSG"] = rtnSet["MSG"]
+        result["errCode"] = errCode
+        result["MSG"]["content"] += ";"+";".join(rtnErrMsgList)
+
+    except Exception as e:
+        errMsg = f"PID: {_processorPID},CMD:{CMD},errMsg:{str(e)}"
+        _LOG.error(f"{errMsg}, {traceback.format_exc()}")
+
+        rtnSet = comFC.rtnMSG("ERR_GENERAL", "ERR_GENERAL", "")
+        result = rtnSet
+
+    return result
+
+
+
+
+#mindgram HTTP interface functions end
+
 #application functions end
 
 
@@ -2958,6 +8447,88 @@ urlPathMap = {
 
 
     #application functions end
+
+    #mindgram table CRUD operations begin
+
+    #mgannualfilm CRUD operations
+    "mgannualfilmadd": funcMgannualfilmAdd,
+    "mgannualfilmdel": funcMgannualfilmDel,
+    "mgannualfilmmodify": funcMgannualfilmModify,
+    "mgannualfilmqry": funcMgannualfilmQry,
+
+    #mgbadgedef CRUD operations
+    "mgbadgedefadd": funcMgbadgedefAdd,
+    "mgbadgedefdel": funcMgbadgedefDel,
+    "mgbadgedefmodify": funcMgbadgedefModify,
+    "mgbadgedefqry": funcMgbadgedefQry,
+
+    #mgfriend CRUD operations
+    "mgfriendadd": funcMgfriendAdd,
+    "mgfrienddel": funcMgfriendDel,
+    "mgfriendmodify": funcMgfriendModify,
+    "mgfriendqry": funcMgfriendQry,
+
+    #mginvitelink CRUD operations
+    "mginvitelinkadd": funcMginvitelinkAdd,
+    "mginvitelinkdel": funcMginvitelinkDel,
+    "mginvitelinkmodify": funcMginvitelinkModify,
+    "mginvitelinkqry": funcMginvitelinkQry,
+
+    #mgmoodguess CRUD operations
+    "mgmoodguessadd": funcMgmoodguessAdd,
+    "mgmoodguessdel": funcMgmoodguessDel,
+    "mgmoodguessmodify": funcMgmoodguessModify,
+    "mgmoodguessqry": funcMgmoodguessQry,
+
+    #mgmoodpost CRUD operations
+    "mgmoodpostadd": funcMgmoodpostAdd,
+    "mgmoodpostdel": funcMgmoodpostDel,
+    "mgmoodpostmodify": funcMgmoodpostModify,
+    "mgmoodpostqry": funcMgmoodpostQry,
+
+    #mgmoodreaction CRUD operations
+    "mgmoodreactionadd": funcMgmoodreactionAdd,
+    "mgmoodreactiondel": funcMgmoodreactionDel,
+    "mgmoodreactionmodify": funcMgmoodreactionModify,
+    "mgmoodreactionqry": funcMgmoodreactionQry,
+
+    #mgquarterlyreport CRUD operations
+    "mgquarterlyreportadd": funcMgquarterlyreportAdd,
+    "mgquarterlyreportdel": funcMgquarterlyreportDel,
+    "mgquarterlyreportmodify": funcMgquarterlyreportModify,
+    "mgquarterlyreportqry": funcMgquarterlyreportQry,
+
+    #mgsystemconfig CRUD operations
+    "mgsystemconfigadd": funcMgsystemconfigAdd,
+    "mgsystemconfigdel": funcMgsystemconfigDel,
+    "mgsystemconfigmodify": funcMgsystemconfigModify,
+    "mgsystemconfigqry": funcMgsystemconfigQry,
+
+    #mgtcmdiagnosis CRUD operations
+    "mgtcmdiagnosisadd": funcMgtcmdiagnosisAdd,
+    "mgtcmdiagnosisdel": funcMgtcmdiagnosisDel,
+    "mgtcmdiagnosismodify": funcMgtcmdiagnosisModify,
+    "mgtcmdiagnosisqry": funcMgtcmdiagnosisQry,
+
+    #mguserbadge CRUD operations
+    "mguserbadgeadd": funcMguserbadgeAdd,
+    "mguserbadgedel": funcMguserbadgeDel,
+    "mguserbadgemodify": funcMguserbadgeModify,
+    "mguserbadgeqry": funcMguserbadgeQry,
+
+    #mguserstats CRUD operations
+    "mguserstatsadd": funcMguserstatsAdd,
+    "mguserstatsdel": funcMguserstatsDel,
+    "mguserstatsmodify": funcMguserstatsModify,
+    "mguserstatsqry": funcMguserstatsQry,
+
+    #mgweeklyreel CRUD operations
+    "mgweeklyreeladd": funcMgweeklyreelAdd,
+    "mgweeklyreeldel": funcMgweeklyreelDel,
+    "mgweeklyreelmodify": funcMgweeklyreelModify,
+    "mgweeklyreelqry": funcMgweeklyreelQry,
+
+    #mindgram table CRUD operations end
 }
 
 

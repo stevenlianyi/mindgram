@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+﻿#! /usr/bin/env python3
 #encoding: utf-8
 
 #Filename: basicSettings.py  
@@ -7,7 +7,7 @@
 #Date: 2022-08-23
 #Description:   通用的配置管理,网络地址等
 
-_VERSION="20260606"
+_VERSION="20260607"
 
 
 import os
@@ -246,6 +246,20 @@ ROLE_CMD_LIST =\
     "savehomepagemsg","qryhomepagemsg",
     #获取当前用户的默认主页数据
     "gethomepagedata",
+    #mindgram CRUD
+    "mgannualfilmadd", "mgannualfilmdel", "mgannualfilmmodify", "mgannualfilmqry",
+    "mgbadgedefadd", "mgbadgedefdel", "mgbadgedefmodify", "mgbadgedefqry",
+    "mgfriendadd", "mgfrienddel", "mgfriendmodify", "mgfriendqry",
+    "mginvitelinkadd", "mginvitelinkdel", "mginvitelinkmodify", "mginvitelinkqry",
+    "mgmoodguessadd", "mgmoodguessdel", "mgmoodguessmodify", "mgmoodguessqry",
+    "mgmoodpostadd", "mgmoodpostdel", "mgmoodpostmodify", "mgmoodpostqry",
+    "mgmoodreactionadd", "mgmoodreactiondel", "mgmoodreactionmodify", "mgmoodreactionqry",
+    "mgquarterlyreportadd", "mgquarterlyreportdel", "mgquarterlyreportmodify", "mgquarterlyreportqry",
+    "mgsystemconfigadd", "mgsystemconfigdel", "mgsystemconfigmodify", "mgsystemconfigqry",
+    "mgtcmdiagnosisadd", "mgtcmdiagnosisdel", "mgtcmdiagnosismodify", "mgtcmdiagnosisqry",
+    "mguserbadgeadd", "mguserbadgedel", "mguserbadgemodify", "mguserbadgeqry",
+    "mguserstatsadd", "mguserstatsdel", "mguserstatsmodify", "mguserstatsqry",
+    "mgweeklyreeladd", "mgweeklyreeldel", "mgweeklyreelmodify", "mgweeklyreelqry",
     ], 
 "manager":    [
     #user related
@@ -255,6 +269,20 @@ ROLE_CMD_LIST =\
     "savehomepagemsg","qryhomepagemsg",
     #获取当前用户的默认主页数据
     "gethomepagedata",
+    #mindgram CRUD
+    "mgannualfilmadd", "mgannualfilmdel", "mgannualfilmmodify", "mgannualfilmqry",
+    "mgbadgedefadd", "mgbadgedefdel", "mgbadgedefmodify", "mgbadgedefqry",
+    "mgfriendadd", "mgfrienddel", "mgfriendmodify", "mgfriendqry",
+    "mginvitelinkadd", "mginvitelinkdel", "mginvitelinkmodify", "mginvitelinkqry",
+    "mgmoodguessadd", "mgmoodguessdel", "mgmoodguessmodify", "mgmoodguessqry",
+    "mgmoodpostadd", "mgmoodpostdel", "mgmoodpostmodify", "mgmoodpostqry",
+    "mgmoodreactionadd", "mgmoodreactiondel", "mgmoodreactionmodify", "mgmoodreactionqry",
+    "mgquarterlyreportadd", "mgquarterlyreportdel", "mgquarterlyreportmodify", "mgquarterlyreportqry",
+    "mgsystemconfigadd", "mgsystemconfigdel", "mgsystemconfigmodify", "mgsystemconfigqry",
+    "mgtcmdiagnosisadd", "mgtcmdiagnosisdel", "mgtcmdiagnosismodify", "mgtcmdiagnosisqry",
+    "mguserbadgeadd", "mguserbadgedel", "mguserbadgemodify", "mguserbadgeqry",
+    "mguserstatsadd", "mguserstatsdel", "mguserstatsmodify", "mguserstatsqry",
+    "mgweeklyreeladd", "mgweeklyreeldel", "mgweeklyreelmodify", "mgweeklyreelqry",
     ], 
 "operator":[
     #user related
@@ -262,6 +290,20 @@ ROLE_CMD_LIST =\
     "usersavedata", "usergetdata",
     #获取当前用户的默认主页
     "gethomepagedata",
+    #mindgram CRUD
+    "mgannualfilmadd", "mgannualfilmdel", "mgannualfilmmodify", "mgannualfilmqry",
+    "mgbadgedefadd", "mgbadgedefdel", "mgbadgedefmodify", "mgbadgedefqry",
+    "mgfriendadd", "mgfrienddel", "mgfriendmodify", "mgfriendqry",
+    "mginvitelinkadd", "mginvitelinkdel", "mginvitelinkmodify", "mginvitelinkqry",
+    "mgmoodguessadd", "mgmoodguessdel", "mgmoodguessmodify", "mgmoodguessqry",
+    "mgmoodpostadd", "mgmoodpostdel", "mgmoodpostmodify", "mgmoodpostqry",
+    "mgmoodreactionadd", "mgmoodreactiondel", "mgmoodreactionmodify", "mgmoodreactionqry",
+    "mgquarterlyreportadd", "mgquarterlyreportdel", "mgquarterlyreportmodify", "mgquarterlyreportqry",
+    "mgsystemconfigadd", "mgsystemconfigdel", "mgsystemconfigmodify", "mgsystemconfigqry",
+    "mgtcmdiagnosisadd", "mgtcmdiagnosisdel", "mgtcmdiagnosismodify", "mgtcmdiagnosisqry",
+    "mguserbadgeadd", "mguserbadgedel", "mguserbadgemodify", "mguserbadgeqry",
+    "mguserstatsadd", "mguserstatsdel", "mguserstatsmodify", "mguserstatsqry",
+    "mgweeklyreeladd", "mgweeklyreeldel", "mgweeklyreelmodify", "mgweeklyreelqry",
     ], 
 "customer":[
     #user related
@@ -269,6 +311,20 @@ ROLE_CMD_LIST =\
     "usersavedata", "usergetdata",
     #获取当前用户的默认主页
     "gethomepagedata",
+    #mindgram CRUD
+    "mgannualfilmadd", "mgannualfilmdel", "mgannualfilmmodify", "mgannualfilmqry",
+    "mgbadgedefadd", "mgbadgedefdel", "mgbadgedefmodify", "mgbadgedefqry",
+    "mgfriendadd", "mgfrienddel", "mgfriendmodify", "mgfriendqry",
+    "mginvitelinkadd", "mginvitelinkdel", "mginvitelinkmodify", "mginvitelinkqry",
+    "mgmoodguessadd", "mgmoodguessdel", "mgmoodguessmodify", "mgmoodguessqry",
+    "mgmoodpostadd", "mgmoodpostdel", "mgmoodpostmodify", "mgmoodpostqry",
+    "mgmoodreactionadd", "mgmoodreactiondel", "mgmoodreactionmodify", "mgmoodreactionqry",
+    "mgquarterlyreportadd", "mgquarterlyreportdel", "mgquarterlyreportmodify", "mgquarterlyreportqry",
+    "mgsystemconfigadd", "mgsystemconfigdel", "mgsystemconfigmodify", "mgsystemconfigqry",
+    "mgtcmdiagnosisadd", "mgtcmdiagnosisdel", "mgtcmdiagnosismodify", "mgtcmdiagnosisqry",
+    "mguserbadgeadd", "mguserbadgedel", "mguserbadgemodify", "mguserbadgeqry",
+    "mguserstatsadd", "mguserstatsdel", "mguserstatsmodify", "mguserstatsqry",
+    "mgweeklyreeladd", "mgweeklyreeldel", "mgweeklyreelmodify", "mgweeklyreelqry",
     ], 
 "visitor":[
     #user related
@@ -276,6 +332,20 @@ ROLE_CMD_LIST =\
     "usersavedata", "usergetdata",
     #获取当前用户的默认主页
     "gethomepagedata",
+    #mindgram CRUD
+    "mgannualfilmadd", "mgannualfilmdel", "mgannualfilmmodify", "mgannualfilmqry",
+    "mgbadgedefadd", "mgbadgedefdel", "mgbadgedefmodify", "mgbadgedefqry",
+    "mgfriendadd", "mgfrienddel", "mgfriendmodify", "mgfriendqry",
+    "mginvitelinkadd", "mginvitelinkdel", "mginvitelinkmodify", "mginvitelinkqry",
+    "mgmoodguessadd", "mgmoodguessdel", "mgmoodguessmodify", "mgmoodguessqry",
+    "mgmoodpostadd", "mgmoodpostdel", "mgmoodpostmodify", "mgmoodpostqry",
+    "mgmoodreactionadd", "mgmoodreactiondel", "mgmoodreactionmodify", "mgmoodreactionqry",
+    "mgquarterlyreportadd", "mgquarterlyreportdel", "mgquarterlyreportmodify", "mgquarterlyreportqry",
+    "mgsystemconfigadd", "mgsystemconfigdel", "mgsystemconfigmodify", "mgsystemconfigqry",
+    "mgtcmdiagnosisadd", "mgtcmdiagnosisdel", "mgtcmdiagnosismodify", "mgtcmdiagnosisqry",
+    "mguserbadgeadd", "mguserbadgedel", "mguserbadgemodify", "mguserbadgeqry",
+    "mguserstatsadd", "mguserstatsdel", "mguserstatsmodify", "mguserstatsqry",
+    "mgweeklyreeladd", "mgweeklyreeldel", "mgweeklyreelmodify", "mgweeklyreelqry",
     ], 
 }
 
@@ -301,6 +371,20 @@ FUNCTION_CMD_CNNAME_DATA = {
     "usermodify":"用户修改",
     "usersavedata":"用户存储数据",
     "usersearch":"用户查询",
+    #mindgram CRUD
+    "mgannualfilmadd":"年度影片增加", "mgannualfilmdel":"年度影片删除", "mgannualfilmmodify":"年度影片修改", "mgannualfilmqry":"年度影片查询",
+    "mgbadgedefadd":"徽章定义增加", "mgbadgedefdel":"徽章定义删除", "mgbadgedefmodify":"徽章定义修改", "mgbadgedefqry":"徽章定义查询",
+    "mgfriendadd":"好友管理增加", "mgfrienddel":"好友管理删除", "mgfriendmodify":"好友管理修改", "mgfriendqry":"好友管理查询",
+    "mginvitelinkadd":"邀请链接增加", "mginvitelinkdel":"邀请链接删除", "mginvitelinkmodify":"邀请链接修改", "mginvitelinkqry":"邀请链接查询",
+    "mgmoodguessadd":"心情猜测增加", "mgmoodguessdel":"心情猜测删除", "mgmoodguessmodify":"心情猜测修改", "mgmoodguessqry":"心情猜测查询",
+    "mgmoodpostadd":"心情帖子增加", "mgmoodpostdel":"心情帖子删除", "mgmoodpostmodify":"心情帖子修改", "mgmoodpostqry":"心情帖子查询",
+    "mgmoodreactionadd":"心情反应增加", "mgmoodreactiondel":"心情反应删除", "mgmoodreactionmodify":"心情反应修改", "mgmoodreactionqry":"心情反应查询",
+    "mgquarterlyreportadd":"季度报告增加", "mgquarterlyreportdel":"季度报告删除", "mgquarterlyreportmodify":"季度报告修改", "mgquarterlyreportqry":"季度报告查询",
+    "mgsystemconfigadd":"系统配置增加", "mgsystemconfigdel":"系统配置删除", "mgsystemconfigmodify":"系统配置修改", "mgsystemconfigqry":"系统配置查询",
+    "mgtcmdiagnosisadd":"中医诊断增加", "mgtcmdiagnosisdel":"中医诊断删除", "mgtcmdiagnosismodify":"中医诊断修改", "mgtcmdiagnosisqry":"中医诊断查询",
+    "mguserbadgeadd":"用户徽章增加", "mguserbadgedel":"用户徽章删除", "mguserbadgemodify":"用户徽章修改", "mguserbadgeqry":"用户徽章查询",
+    "mguserstatsadd":"用户统计增加", "mguserstatsdel":"用户统计删除", "mguserstatsmodify":"用户统计修改", "mguserstatsqry":"用户统计查询",
+    "mgweeklyreeladd":"每周回顾增加", "mgweeklyreeldel":"每周回顾删除", "mgweeklyreelmodify":"每周回顾修改", "mgweeklyreelqry":"每周回顾查询",
 }
 
 menuParameters = {

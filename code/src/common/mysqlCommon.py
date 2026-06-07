@@ -9,7 +9,7 @@
 #mysql数据库信息也存储在这里, 主要是只有部分程序需要处理mysql数据库, 读写已经分离, 目前主要是采用sql语句处理, 已经防止注入攻击. 
 
 
-_VERSION="20260606"
+_VERSION="20260607"
 
 #add src directory
 import os
@@ -1489,6 +1489,5678 @@ def query_hwinfo_report_record(tableName,recID = "0", hostName = "", YMDHMS="", 
 #application end
 
 
+#mindgram begin
+
+
+#mgAnnualFilm begin
+def tablename_convertor_mgAnnualFilm():
+    tableName = "mgAnnualFilm"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgAnnualFilm(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "filmID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '年度电影ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "filmYear CHAR(4) COMMENT '年度 YYYY',",
+    "videoUrl VARCHAR(500) COMMENT '视频文件URL',",
+    "duration SMALLINT COMMENT '视频时长 秒',",
+    "scenesData TEXT COMMENT '场景数据 JSON 包含四章场景',",
+    "resilienceScore TINYINT COMMENT '韧性评分 0-100',",
+    "headlineStats TEXT COMMENT '六项核心数据 JSON',",
+    "narrationScript TEXT COMMENT '旁白脚本 TEXT',",
+    "exportUrl VARCHAR(500) COMMENT '导出分享URL',",
+    "chapterData TEXT COMMENT '章节跳转数据 JSON',",
+    "createdYMDHMS VARCHAR(16) COMMENT '生成时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgAnnualFilm表
+def drop_mgAnnualFilm(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgAnnualFilm 删除记录
+def delete_mgAnnualFilm(tableName,filmID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE filmID = %s"
+        valuesList = [filmID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgAnnualFilm 增加记录
+def insert_mgAnnualFilm(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["filmYear"] = dataSet.get("filmYear", "") 
+
+        saveSet["videoUrl"] = dataSet.get("videoUrl", "") 
+
+        try:
+            duration = int(dataSet.get("duration")) 
+        except:
+            duration = 0 
+        saveSet["duration"] = duration
+
+        saveSet["scenesData"] = dataSet.get("scenesData", "") 
+
+        try:
+            resilienceScore = int(dataSet.get("resilienceScore")) 
+        except:
+            resilienceScore = 0 
+        saveSet["resilienceScore"] = resilienceScore
+
+        saveSet["headlineStats"] = dataSet.get("headlineStats", "") 
+
+        saveSet["narrationScript"] = dataSet.get("narrationScript", "") 
+
+        saveSet["exportUrl"] = dataSet.get("exportUrl", "") 
+
+        saveSet["chapterData"] = dataSet.get("chapterData", "") 
+
+        saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgAnnualFilm 修改记录
+def update_mgAnnualFilm(tableName,filmID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        filmYear = dataSet.get("filmYear") 
+        if filmYear:
+            saveSet["filmYear"] = filmYear
+
+        videoUrl = dataSet.get("videoUrl") 
+        if videoUrl:
+            saveSet["videoUrl"] = videoUrl
+
+        try:
+            duration = int(dataSet.get("duration")) 
+            saveSet["duration"] = duration
+        except:
+            pass
+
+        scenesData = dataSet.get("scenesData") 
+        if scenesData:
+            saveSet["scenesData"] = scenesData
+
+        try:
+            resilienceScore = int(dataSet.get("resilienceScore")) 
+            saveSet["resilienceScore"] = resilienceScore
+        except:
+            pass
+
+        headlineStats = dataSet.get("headlineStats") 
+        if headlineStats:
+            saveSet["headlineStats"] = headlineStats
+
+        narrationScript = dataSet.get("narrationScript") 
+        if narrationScript:
+            saveSet["narrationScript"] = narrationScript
+
+        exportUrl = dataSet.get("exportUrl") 
+        if exportUrl:
+            saveSet["exportUrl"] = exportUrl
+
+        chapterData = dataSet.get("chapterData") 
+        if chapterData:
+            saveSet["chapterData"] = chapterData
+
+        createdYMDHMS = dataSet.get("createdYMDHMS") 
+        if createdYMDHMS:
+            saveSet["createdYMDHMS"] = createdYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "filmID = %s"
+        keyValues = [filmID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgAnnualFilm 查询记录
+def query_mgAnnualFilm(tableName,filmID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            filmID = int(filmID)
+        except:
+            filmID = 0
+
+        if filmID > 0:
+            sqlStr =  sqlStr + " WHERE filmID = %s" 
+            valuesList = [filmID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgAnnualFilm end 
+
+
+#mgAnnualFilm end
+
+
+#mgBadgeDef begin
+def tablename_convertor_mgBadgeDef():
+    tableName = "mgBadgeDef"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgBadgeDef(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "badgeID VARCHAR(16) PRIMARY KEY COMMENT '徽章ID',",
+    "badgeName VARCHAR(40) COMMENT '徽章名称',",
+    "badgeIcon VARCHAR(200) COMMENT '徽章图标URL',",
+    "`description` VARCHAR(200) COMMENT '获得条件描述',",
+    "conditionType VARCHAR(32) COMMENT '条件类型 STREAK/GUESS/POST/SPECIAL',",
+    "conditionValue SMALLINT COMMENT '条件数值',",
+    "sortOrder SMALLINT COMMENT '排序',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgBadgeDef表
+def drop_mgBadgeDef(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgBadgeDef 删除记录
+def delete_mgBadgeDef(tableName,badgeID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE badgeID = %s"
+        valuesList = [badgeID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgBadgeDef 增加记录
+def insert_mgBadgeDef(tableName,badgeID,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["badgeID"] = dataSet.get("badgeID", "") 
+
+        saveSet["badgeName"] = dataSet.get("badgeName", "") 
+
+        saveSet["badgeIcon"] = dataSet.get("badgeIcon", "") 
+
+        saveSet["description"] = dataSet.get("description", "") 
+
+        saveSet["conditionType"] = dataSet.get("conditionType", "") 
+
+        try:
+            conditionValue = int(dataSet.get("conditionValue")) 
+        except:
+            conditionValue = 0 
+        saveSet["conditionValue"] = conditionValue
+
+        try:
+            sortOrder = int(dataSet.get("sortOrder")) 
+        except:
+            sortOrder = 0 
+        saveSet["sortOrder"] = sortOrder
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgBadgeDef 修改记录
+def update_mgBadgeDef(tableName,badgeID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        badgeName = dataSet.get("badgeName") 
+        if badgeName:
+            saveSet["badgeName"] = badgeName
+
+        badgeIcon = dataSet.get("badgeIcon") 
+        if badgeIcon:
+            saveSet["badgeIcon"] = badgeIcon
+
+        description = dataSet.get("description") 
+        if description:
+            saveSet["description"] = description
+
+        conditionType = dataSet.get("conditionType") 
+        if conditionType:
+            saveSet["conditionType"] = conditionType
+
+        try:
+            conditionValue = int(dataSet.get("conditionValue")) 
+            saveSet["conditionValue"] = conditionValue
+        except:
+            pass
+
+        try:
+            sortOrder = int(dataSet.get("sortOrder")) 
+            saveSet["sortOrder"] = sortOrder
+        except:
+            pass
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "badgeID = %s"
+        keyValues = [badgeID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgBadgeDef 查询记录
+def query_mgBadgeDef(tableName,badgeID = "", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        #recID = int(recID)
+
+        #if recID > 0:
+            #sqlStr =  sqlStr + " WHERE recID = %s" 
+            #valuesList = [recID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgBadgeDef end 
+
+
+#mgBadgeDef end
+
+
+#mgFriend begin
+def tablename_convertor_mgFriend():
+    tableName = "mgFriend"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgFriend(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "relationID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '好友关系ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "friendID VARCHAR(32) NOT NULL COMMENT '好友用户ID',",
+    "`status` CHAR(1) COMMENT '关系状态 0=请求中 1=已接受 2=已拒绝 3=已拉黑',",
+    "requestMsg VARCHAR(100) COMMENT '添加好友附言',",
+    "createYMDHMS VARCHAR(16) COMMENT '建立关系时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgFriend表
+def drop_mgFriend(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgFriend 删除记录
+def delete_mgFriend(tableName,relationID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE relationID = %s"
+        valuesList = [relationID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgFriend 增加记录
+def insert_mgFriend(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["friendID"] = dataSet.get("friendID", "") 
+
+        saveSet["status"] = dataSet.get("status", "") 
+
+        saveSet["requestMsg"] = dataSet.get("requestMsg", "") 
+
+        saveSet["createYMDHMS"] = dataSet.get("createYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgFriend 修改记录
+def update_mgFriend(tableName,relationID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        friendID = dataSet.get("friendID") 
+        if friendID:
+            saveSet["friendID"] = friendID
+
+        status = dataSet.get("status") 
+        if status:
+            saveSet["status"] = status
+
+        requestMsg = dataSet.get("requestMsg") 
+        if requestMsg:
+            saveSet["requestMsg"] = requestMsg
+
+        createYMDHMS = dataSet.get("createYMDHMS") 
+        if createYMDHMS:
+            saveSet["createYMDHMS"] = createYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "relationID = %s"
+        keyValues = [relationID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgFriend 查询记录
+def query_mgFriend(tableName,relationID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            relationID = int(relationID)
+        except:
+            relationID = 0
+
+        if relationID > 0:
+            sqlStr =  sqlStr + " WHERE relationID = %s" 
+            valuesList = [relationID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgFriend end 
+
+
+#mgFriend end
+
+
+#mgInviteLink begin
+def tablename_convertor_mgInviteLink():
+    tableName = "mgInviteLink"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgInviteLink(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "inviteID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '邀请ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '邀请人用户ID',",
+    "inviteCode VARCHAR(32) COMMENT '唯一邀请码',",
+    "usageCount SMALLINT COMMENT '已使用次数',",
+    "maxUsage SMALLINT COMMENT '最大使用次数',",
+    "expireDate CHAR(8) COMMENT '过期日期 YYYYMMDD',",
+    "`status` CHAR(1) COMMENT '状态 0=有效 1=已用完 2=已过期',",
+    "createdYMDHMS VARCHAR(16) COMMENT '创建时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgInviteLink表
+def drop_mgInviteLink(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgInviteLink 删除记录
+def delete_mgInviteLink(tableName,inviteID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE inviteID = %s"
+        valuesList = [inviteID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgInviteLink 增加记录
+def insert_mgInviteLink(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["inviteCode"] = dataSet.get("inviteCode", "") 
+
+        try:
+            usageCount = int(dataSet.get("usageCount")) 
+        except:
+            usageCount = 0 
+        saveSet["usageCount"] = usageCount
+
+        try:
+            maxUsage = int(dataSet.get("maxUsage")) 
+        except:
+            maxUsage = 0 
+        saveSet["maxUsage"] = maxUsage
+
+        saveSet["expireDate"] = dataSet.get("expireDate", "") 
+
+        saveSet["status"] = dataSet.get("status", "") 
+
+        saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgInviteLink 修改记录
+def update_mgInviteLink(tableName,inviteID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        inviteCode = dataSet.get("inviteCode") 
+        if inviteCode:
+            saveSet["inviteCode"] = inviteCode
+
+        try:
+            usageCount = int(dataSet.get("usageCount")) 
+            saveSet["usageCount"] = usageCount
+        except:
+            pass
+
+        try:
+            maxUsage = int(dataSet.get("maxUsage")) 
+            saveSet["maxUsage"] = maxUsage
+        except:
+            pass
+
+        expireDate = dataSet.get("expireDate") 
+        if expireDate:
+            saveSet["expireDate"] = expireDate
+
+        status = dataSet.get("status") 
+        if status:
+            saveSet["status"] = status
+
+        createdYMDHMS = dataSet.get("createdYMDHMS") 
+        if createdYMDHMS:
+            saveSet["createdYMDHMS"] = createdYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "inviteID = %s"
+        keyValues = [inviteID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgInviteLink 查询记录
+def query_mgInviteLink(tableName,inviteID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            inviteID = int(inviteID)
+        except:
+            inviteID = 0
+
+        if inviteID > 0:
+            sqlStr =  sqlStr + " WHERE inviteID = %s" 
+            valuesList = [inviteID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgInviteLink end 
+
+
+#mgInviteLink end
+
+
+#mgMoodGuess begin
+def tablename_convertor_mgMoodGuess():
+    tableName = "mgMoodGuess"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgMoodGuess(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "guessID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '猜测记录ID',",
+    "postID BIGINT NOT NULL COMMENT '被猜打卡贴ID',",
+    "guesserID VARCHAR(32) NOT NULL COMMENT '猜测者用户ID',",
+    "guessedEmoji VARCHAR(8) COMMENT '猜测的表情',",
+    "isCorrect CHAR(1) COMMENT '是否猜对 0=否 1=是',",
+    "pointsEarned SMALLINT COMMENT '获得积分',",
+    "guessYMDHMS VARCHAR(16) COMMENT '猜测时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgMoodGuess表
+def drop_mgMoodGuess(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgMoodGuess 删除记录
+def delete_mgMoodGuess(tableName,guessID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE guessID = %s"
+        valuesList = [guessID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodGuess 增加记录
+def insert_mgMoodGuess(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        try:
+            postID = int(dataSet.get("postID")) 
+        except:
+            postID = 0 
+        saveSet["postID"] = postID
+
+        saveSet["guesserID"] = dataSet.get("guesserID", "") 
+
+        saveSet["guessedEmoji"] = dataSet.get("guessedEmoji", "") 
+
+        saveSet["isCorrect"] = dataSet.get("isCorrect", "") 
+
+        try:
+            pointsEarned = int(dataSet.get("pointsEarned")) 
+        except:
+            pointsEarned = 0 
+        saveSet["pointsEarned"] = pointsEarned
+
+        saveSet["guessYMDHMS"] = dataSet.get("guessYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodGuess 修改记录
+def update_mgMoodGuess(tableName,guessID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        try:
+            postID = int(dataSet.get("postID")) 
+            saveSet["postID"] = postID
+        except:
+            pass
+
+        guesserID = dataSet.get("guesserID") 
+        if guesserID:
+            saveSet["guesserID"] = guesserID
+
+        guessedEmoji = dataSet.get("guessedEmoji") 
+        if guessedEmoji:
+            saveSet["guessedEmoji"] = guessedEmoji
+
+        isCorrect = dataSet.get("isCorrect") 
+        if isCorrect:
+            saveSet["isCorrect"] = isCorrect
+
+        try:
+            pointsEarned = int(dataSet.get("pointsEarned")) 
+            saveSet["pointsEarned"] = pointsEarned
+        except:
+            pass
+
+        guessYMDHMS = dataSet.get("guessYMDHMS") 
+        if guessYMDHMS:
+            saveSet["guessYMDHMS"] = guessYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "guessID = %s"
+        keyValues = [guessID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodGuess 查询记录
+def query_mgMoodGuess(tableName,guessID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            guessID = int(guessID)
+        except:
+            guessID = 0
+
+        if guessID > 0:
+            sqlStr =  sqlStr + " WHERE guessID = %s" 
+            valuesList = [guessID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodGuess end 
+
+
+#mgMoodGuess end
+
+
+#mgMoodPost begin
+def tablename_convertor_mgMoodPost():
+    tableName = "mgMoodPost"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgMoodPost(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "postID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '打卡贴ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "moodEmoji VARCHAR(8) NOT NULL COMMENT '情绪表情Emoji',",
+    "intensity TINYINT NOT NULL COMMENT '情绪强度 1-10',",
+    "hintNote VARCHAR(200) COMMENT '谜语式提示语',",
+    "isAnonymous CHAR(1) COMMENT '是否匿名 0=否 1=是',",
+    "photoUrl VARCHAR(500) COMMENT '自拍照片URL',",
+    "thumbnailUrl VARCHAR(500) COMMENT '缩略图URL',",
+    "postDate CHAR(8) COMMENT '打卡日期 YYYYMMDD',",
+    "postYMDHMS CHAR(16) COMMENT '打卡时间 YYYYMMDDHHMMSS',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgMoodPost表
+def drop_mgMoodPost(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgMoodPost 删除记录
+def delete_mgMoodPost(tableName,postID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE postID = %s"
+        valuesList = [postID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodPost 增加记录
+def insert_mgMoodPost(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["moodEmoji"] = dataSet.get("moodEmoji", "") 
+
+        try:
+            intensity = int(dataSet.get("intensity")) 
+        except:
+            intensity = 0 
+        saveSet["intensity"] = intensity
+
+        saveSet["hintNote"] = dataSet.get("hintNote", "") 
+
+        saveSet["isAnonymous"] = dataSet.get("isAnonymous", "") 
+
+        saveSet["photoUrl"] = dataSet.get("photoUrl", "") 
+
+        saveSet["thumbnailUrl"] = dataSet.get("thumbnailUrl", "") 
+
+        saveSet["postDate"] = dataSet.get("postDate", "") 
+
+        saveSet["postYMDHMS"] = dataSet.get("postYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodPost 修改记录
+def update_mgMoodPost(tableName,postID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        moodEmoji = dataSet.get("moodEmoji") 
+        if moodEmoji:
+            saveSet["moodEmoji"] = moodEmoji
+
+        try:
+            intensity = int(dataSet.get("intensity")) 
+            saveSet["intensity"] = intensity
+        except:
+            pass
+
+        hintNote = dataSet.get("hintNote") 
+        if hintNote:
+            saveSet["hintNote"] = hintNote
+
+        isAnonymous = dataSet.get("isAnonymous") 
+        if isAnonymous:
+            saveSet["isAnonymous"] = isAnonymous
+
+        photoUrl = dataSet.get("photoUrl") 
+        if photoUrl:
+            saveSet["photoUrl"] = photoUrl
+
+        thumbnailUrl = dataSet.get("thumbnailUrl") 
+        if thumbnailUrl:
+            saveSet["thumbnailUrl"] = thumbnailUrl
+
+        postDate = dataSet.get("postDate") 
+        if postDate:
+            saveSet["postDate"] = postDate
+
+        postYMDHMS = dataSet.get("postYMDHMS") 
+        if postYMDHMS:
+            saveSet["postYMDHMS"] = postYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "postID = %s"
+        keyValues = [postID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodPost 查询记录
+def query_mgMoodPost(tableName,postID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            postID = int(postID)
+        except:
+            postID = 0
+
+        if postID > 0:
+            sqlStr =  sqlStr + " WHERE postID = %s" 
+            valuesList = [postID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodPost end 
+
+
+#mgMoodPost end
+
+
+#mgMoodReaction begin
+def tablename_convertor_mgMoodReaction():
+    tableName = "mgMoodReaction"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgMoodReaction(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "reactionID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '回应记录ID',",
+    "postID BIGINT NOT NULL COMMENT '打卡贴ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '回应用户ID',",
+    "reactionType VARCHAR(8) COMMENT '回应类型 heart/tears/laugh/hug',",
+    "reactionYMDHMS VARCHAR(16) COMMENT '回应时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgMoodReaction表
+def drop_mgMoodReaction(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgMoodReaction 删除记录
+def delete_mgMoodReaction(tableName,reactionID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE reactionID = %s"
+        valuesList = [reactionID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodReaction 增加记录
+def insert_mgMoodReaction(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        try:
+            postID = int(dataSet.get("postID")) 
+        except:
+            postID = 0 
+        saveSet["postID"] = postID
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["reactionType"] = dataSet.get("reactionType", "") 
+
+        saveSet["reactionYMDHMS"] = dataSet.get("reactionYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodReaction 修改记录
+def update_mgMoodReaction(tableName,reactionID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        try:
+            postID = int(dataSet.get("postID")) 
+            saveSet["postID"] = postID
+        except:
+            pass
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        reactionType = dataSet.get("reactionType") 
+        if reactionType:
+            saveSet["reactionType"] = reactionType
+
+        reactionYMDHMS = dataSet.get("reactionYMDHMS") 
+        if reactionYMDHMS:
+            saveSet["reactionYMDHMS"] = reactionYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "reactionID = %s"
+        keyValues = [reactionID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodReaction 查询记录
+def query_mgMoodReaction(tableName,reactionID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            reactionID = int(reactionID)
+        except:
+            reactionID = 0
+
+        if reactionID > 0:
+            sqlStr =  sqlStr + " WHERE reactionID = %s" 
+            valuesList = [reactionID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodReaction end 
+
+
+#mgMoodReaction end
+
+
+#mgQuarterlyReport begin
+def tablename_convertor_mgQuarterlyReport():
+    tableName = "mgQuarterlyReport"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgQuarterlyReport(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "reportID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '季度报告ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "quarterStart CHAR(8) COMMENT '季度开始日期 YYYYMMDD',",
+    "quarterEnd CHAR(8) COMMENT '季度结束日期 YYYYMMDD',",
+    "avgMoodScore DECIMAL(3,1) COMMENT '平均情绪得分',",
+    "positiveDaysPct DECIMAL(3,1) COMMENT '积极情绪天数占比',",
+    "maxStreak SMALLINT COMMENT '季度最长连续打卡',",
+    "loggingRate DECIMAL(3,1) COMMENT '打卡覆盖率',",
+    "emojiBreakdown TEXT COMMENT '表情分布数据 JSON',",
+    "monthlyTrend TEXT COMMENT '月度趋势数据 JSON',",
+    "diagnosisFindings TEXT COMMENT '诊断五项发现 JSON',",
+    "actionCards TEXT COMMENT '六张行动建议卡片 JSON',",
+    "aiModelVersion VARCHAR(16) COMMENT 'AI模型版本',",
+    "createdYMDHMS VARCHAR(16) COMMENT '生成时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgQuarterlyReport表
+def drop_mgQuarterlyReport(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgQuarterlyReport 删除记录
+def delete_mgQuarterlyReport(tableName,reportID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE reportID = %s"
+        valuesList = [reportID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgQuarterlyReport 增加记录
+def insert_mgQuarterlyReport(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["quarterStart"] = dataSet.get("quarterStart", "") 
+
+        saveSet["quarterEnd"] = dataSet.get("quarterEnd", "") 
+
+        try:
+            avgMoodScore = float(dataSet.get("avgMoodScore")) 
+        except:
+            avgMoodScore = 0 
+        saveSet["avgMoodScore"] = avgMoodScore
+
+        try:
+            positiveDaysPct = float(dataSet.get("positiveDaysPct")) 
+        except:
+            positiveDaysPct = 0 
+        saveSet["positiveDaysPct"] = positiveDaysPct
+
+        try:
+            maxStreak = int(dataSet.get("maxStreak")) 
+        except:
+            maxStreak = 0 
+        saveSet["maxStreak"] = maxStreak
+
+        try:
+            loggingRate = float(dataSet.get("loggingRate")) 
+        except:
+            loggingRate = 0 
+        saveSet["loggingRate"] = loggingRate
+
+        saveSet["emojiBreakdown"] = dataSet.get("emojiBreakdown", "") 
+
+        saveSet["monthlyTrend"] = dataSet.get("monthlyTrend", "") 
+
+        saveSet["diagnosisFindings"] = dataSet.get("diagnosisFindings", "") 
+
+        saveSet["actionCards"] = dataSet.get("actionCards", "") 
+
+        saveSet["aiModelVersion"] = dataSet.get("aiModelVersion", "") 
+
+        saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgQuarterlyReport 修改记录
+def update_mgQuarterlyReport(tableName,reportID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        quarterStart = dataSet.get("quarterStart") 
+        if quarterStart:
+            saveSet["quarterStart"] = quarterStart
+
+        quarterEnd = dataSet.get("quarterEnd") 
+        if quarterEnd:
+            saveSet["quarterEnd"] = quarterEnd
+
+        try:
+            avgMoodScore = float(dataSet.get("avgMoodScore")) 
+            saveSet["avgMoodScore"] = avgMoodScore
+        except:
+            pass
+
+        try:
+            positiveDaysPct = float(dataSet.get("positiveDaysPct")) 
+            saveSet["positiveDaysPct"] = positiveDaysPct
+        except:
+            pass
+
+        try:
+            maxStreak = int(dataSet.get("maxStreak")) 
+            saveSet["maxStreak"] = maxStreak
+        except:
+            pass
+
+        try:
+            loggingRate = float(dataSet.get("loggingRate")) 
+            saveSet["loggingRate"] = loggingRate
+        except:
+            pass
+
+        emojiBreakdown = dataSet.get("emojiBreakdown") 
+        if emojiBreakdown:
+            saveSet["emojiBreakdown"] = emojiBreakdown
+
+        monthlyTrend = dataSet.get("monthlyTrend") 
+        if monthlyTrend:
+            saveSet["monthlyTrend"] = monthlyTrend
+
+        diagnosisFindings = dataSet.get("diagnosisFindings") 
+        if diagnosisFindings:
+            saveSet["diagnosisFindings"] = diagnosisFindings
+
+        actionCards = dataSet.get("actionCards") 
+        if actionCards:
+            saveSet["actionCards"] = actionCards
+
+        aiModelVersion = dataSet.get("aiModelVersion") 
+        if aiModelVersion:
+            saveSet["aiModelVersion"] = aiModelVersion
+
+        createdYMDHMS = dataSet.get("createdYMDHMS") 
+        if createdYMDHMS:
+            saveSet["createdYMDHMS"] = createdYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "reportID = %s"
+        keyValues = [reportID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgQuarterlyReport 查询记录
+def query_mgQuarterlyReport(tableName,reportID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            reportID = int(reportID)
+        except:
+            reportID = 0
+
+        if reportID > 0:
+            sqlStr =  sqlStr + " WHERE reportID = %s" 
+            valuesList = [reportID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgQuarterlyReport end 
+
+
+#mgQuarterlyReport end
+
+
+#mgSystemConfig begin
+def tablename_convertor_mgSystemConfig():
+    tableName = "mgSystemConfig"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgSystemConfig(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "configID VARCHAR(32) PRIMARY KEY COMMENT '配置项ID',",
+    "configValue VARCHAR(500) COMMENT '配置值',",
+    "configType VARCHAR(16) COMMENT '配置类型 STRING/INT/FLOAT/JSON',",
+    "`description` VARCHAR(200) COMMENT '配置说明',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgSystemConfig表
+def drop_mgSystemConfig(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgSystemConfig 删除记录
+def delete_mgSystemConfig(tableName,configID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE configID = %s"
+        valuesList = [configID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgSystemConfig 增加记录
+def insert_mgSystemConfig(tableName,configID,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["configID"] = dataSet.get("configID", "") 
+
+        saveSet["configValue"] = dataSet.get("configValue", "") 
+
+        saveSet["configType"] = dataSet.get("configType", "") 
+
+        saveSet["description"] = dataSet.get("description", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgSystemConfig 修改记录
+def update_mgSystemConfig(tableName,configID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        configValue = dataSet.get("configValue") 
+        if configValue:
+            saveSet["configValue"] = configValue
+
+        configType = dataSet.get("configType") 
+        if configType:
+            saveSet["configType"] = configType
+
+        description = dataSet.get("description") 
+        if description:
+            saveSet["description"] = description
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "configID = %s"
+        keyValues = [configID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgSystemConfig 查询记录
+def query_mgSystemConfig(tableName,configID = "", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        #recID = int(recID)
+
+        #if recID > 0:
+            #sqlStr =  sqlStr + " WHERE recID = %s" 
+            #valuesList = [recID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgSystemConfig end 
+
+
+#mgSystemConfig end
+
+
+#mgTcmDiagnosis begin
+def tablename_convertor_mgTcmDiagnosis():
+    tableName = "mgTcmDiagnosis"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgTcmDiagnosis(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "tcmID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '中医诊断ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "quarterStart CHAR(8) COMMENT '关联季度开始',",
+    "quarterEnd CHAR(8) COMMENT '关联季度结束',",
+    "primaryPattern VARCHAR(60) COMMENT '主证型 如:肝气郁结',",
+    "secondaryPattern TEXT COMMENT '次证型 JSON',",
+    "radarChartData TEXT COMMENT '五行雷达图数据 JSON',",
+    "dietPlan TEXT COMMENT '饮食方案 JSON 含时辰/食材',",
+    "sleepPlan TEXT COMMENT '睡眠方案 JSON 含就寝时间/流程/穴位',",
+    "bodyClockData TEXT COMMENT '子午流注时钟数据 JSON',",
+    "weeklyPlan TEXT COMMENT '周养生计划 JSON',",
+    "aiModelVersion VARCHAR(16) COMMENT 'AI模型版本',",
+    "createdYMDHMS VARCHAR(16) COMMENT '生成时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgTcmDiagnosis表
+def drop_mgTcmDiagnosis(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgTcmDiagnosis 删除记录
+def delete_mgTcmDiagnosis(tableName,tcmID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE tcmID = %s"
+        valuesList = [tcmID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgTcmDiagnosis 增加记录
+def insert_mgTcmDiagnosis(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["quarterStart"] = dataSet.get("quarterStart", "") 
+
+        saveSet["quarterEnd"] = dataSet.get("quarterEnd", "") 
+
+        saveSet["primaryPattern"] = dataSet.get("primaryPattern", "") 
+
+        saveSet["secondaryPattern"] = dataSet.get("secondaryPattern", "") 
+
+        saveSet["radarChartData"] = dataSet.get("radarChartData", "") 
+
+        saveSet["dietPlan"] = dataSet.get("dietPlan", "") 
+
+        saveSet["sleepPlan"] = dataSet.get("sleepPlan", "") 
+
+        saveSet["bodyClockData"] = dataSet.get("bodyClockData", "") 
+
+        saveSet["weeklyPlan"] = dataSet.get("weeklyPlan", "") 
+
+        saveSet["aiModelVersion"] = dataSet.get("aiModelVersion", "") 
+
+        saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgTcmDiagnosis 修改记录
+def update_mgTcmDiagnosis(tableName,tcmID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        quarterStart = dataSet.get("quarterStart") 
+        if quarterStart:
+            saveSet["quarterStart"] = quarterStart
+
+        quarterEnd = dataSet.get("quarterEnd") 
+        if quarterEnd:
+            saveSet["quarterEnd"] = quarterEnd
+
+        primaryPattern = dataSet.get("primaryPattern") 
+        if primaryPattern:
+            saveSet["primaryPattern"] = primaryPattern
+
+        secondaryPattern = dataSet.get("secondaryPattern") 
+        if secondaryPattern:
+            saveSet["secondaryPattern"] = secondaryPattern
+
+        radarChartData = dataSet.get("radarChartData") 
+        if radarChartData:
+            saveSet["radarChartData"] = radarChartData
+
+        dietPlan = dataSet.get("dietPlan") 
+        if dietPlan:
+            saveSet["dietPlan"] = dietPlan
+
+        sleepPlan = dataSet.get("sleepPlan") 
+        if sleepPlan:
+            saveSet["sleepPlan"] = sleepPlan
+
+        bodyClockData = dataSet.get("bodyClockData") 
+        if bodyClockData:
+            saveSet["bodyClockData"] = bodyClockData
+
+        weeklyPlan = dataSet.get("weeklyPlan") 
+        if weeklyPlan:
+            saveSet["weeklyPlan"] = weeklyPlan
+
+        aiModelVersion = dataSet.get("aiModelVersion") 
+        if aiModelVersion:
+            saveSet["aiModelVersion"] = aiModelVersion
+
+        createdYMDHMS = dataSet.get("createdYMDHMS") 
+        if createdYMDHMS:
+            saveSet["createdYMDHMS"] = createdYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "tcmID = %s"
+        keyValues = [tcmID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgTcmDiagnosis 查询记录
+def query_mgTcmDiagnosis(tableName,tcmID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            tcmID = int(tcmID)
+        except:
+            tcmID = 0
+
+        if tcmID > 0:
+            sqlStr =  sqlStr + " WHERE tcmID = %s" 
+            valuesList = [tcmID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgTcmDiagnosis end 
+
+
+#mgTcmDiagnosis end
+
+
+#mgUserBadge begin
+def tablename_convertor_mgUserBadge():
+    tableName = "mgUserBadge"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgUserBadge(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "recordID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '记录ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "badgeID VARCHAR(16) NOT NULL COMMENT '徽章ID',",
+    "earnYMDHMS VARCHAR(16) COMMENT '获得时间',",
+    "isWearing CHAR(1) COMMENT '是否佩戴中 0=否 1=是',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgUserBadge表
+def drop_mgUserBadge(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgUserBadge 删除记录
+def delete_mgUserBadge(tableName,recordID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE recordID = %s"
+        valuesList = [recordID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserBadge 增加记录
+def insert_mgUserBadge(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["badgeID"] = dataSet.get("badgeID", "") 
+
+        saveSet["earnYMDHMS"] = dataSet.get("earnYMDHMS", "") 
+
+        saveSet["isWearing"] = dataSet.get("isWearing", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserBadge 修改记录
+def update_mgUserBadge(tableName,recordID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        badgeID = dataSet.get("badgeID") 
+        if badgeID:
+            saveSet["badgeID"] = badgeID
+
+        earnYMDHMS = dataSet.get("earnYMDHMS") 
+        if earnYMDHMS:
+            saveSet["earnYMDHMS"] = earnYMDHMS
+
+        isWearing = dataSet.get("isWearing") 
+        if isWearing:
+            saveSet["isWearing"] = isWearing
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "recordID = %s"
+        keyValues = [recordID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserBadge 查询记录
+def query_mgUserBadge(tableName,recordID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            recordID = int(recordID)
+        except:
+            recordID = 0
+
+        if recordID > 0:
+            sqlStr =  sqlStr + " WHERE recordID = %s" 
+            valuesList = [recordID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserBadge end 
+
+
+#mgUserBadge end
+
+
+#mgUserStats begin
+def tablename_convertor_mgUserStats():
+    tableName = "mgUserStats"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgUserStats(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "userID VARCHAR(32) PRIMARY KEY COMMENT '用户ID',",
+    "totalScore INT COMMENT '累计总积分',",
+    "weeklyScore INT COMMENT '本周积分',",
+    "streakDays SMALLINT COMMENT '当前连续打卡天数',",
+    "longestStreak SMALLINT COMMENT '历史最长连续天数',",
+    "totalPosts INT COMMENT '累计发帖数',",
+    "totalCorrectGuesses INT COMMENT '累计正确猜测数',",
+    "totalGuesses INT COMMENT '累计总猜测数',",
+    "weeklyRank SMALLINT COMMENT '本周排名',",
+    "lastPostDate CHAR(8) COMMENT '最后打卡日期',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgUserStats表
+def drop_mgUserStats(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgUserStats 删除记录
+def delete_mgUserStats(tableName,userID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE userID = %s"
+        valuesList = [userID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserStats 增加记录
+def insert_mgUserStats(tableName,userID,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        try:
+            totalScore = int(dataSet.get("totalScore")) 
+        except:
+            totalScore = 0 
+        saveSet["totalScore"] = totalScore
+
+        try:
+            weeklyScore = int(dataSet.get("weeklyScore")) 
+        except:
+            weeklyScore = 0 
+        saveSet["weeklyScore"] = weeklyScore
+
+        try:
+            streakDays = int(dataSet.get("streakDays")) 
+        except:
+            streakDays = 0 
+        saveSet["streakDays"] = streakDays
+
+        try:
+            longestStreak = int(dataSet.get("longestStreak")) 
+        except:
+            longestStreak = 0 
+        saveSet["longestStreak"] = longestStreak
+
+        try:
+            totalPosts = int(dataSet.get("totalPosts")) 
+        except:
+            totalPosts = 0 
+        saveSet["totalPosts"] = totalPosts
+
+        try:
+            totalCorrectGuesses = int(dataSet.get("totalCorrectGuesses")) 
+        except:
+            totalCorrectGuesses = 0 
+        saveSet["totalCorrectGuesses"] = totalCorrectGuesses
+
+        try:
+            totalGuesses = int(dataSet.get("totalGuesses")) 
+        except:
+            totalGuesses = 0 
+        saveSet["totalGuesses"] = totalGuesses
+
+        try:
+            weeklyRank = int(dataSet.get("weeklyRank")) 
+        except:
+            weeklyRank = 0 
+        saveSet["weeklyRank"] = weeklyRank
+
+        saveSet["lastPostDate"] = dataSet.get("lastPostDate", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserStats 修改记录
+def update_mgUserStats(tableName,userID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        try:
+            totalScore = int(dataSet.get("totalScore")) 
+            saveSet["totalScore"] = totalScore
+        except:
+            pass
+
+        try:
+            weeklyScore = int(dataSet.get("weeklyScore")) 
+            saveSet["weeklyScore"] = weeklyScore
+        except:
+            pass
+
+        try:
+            streakDays = int(dataSet.get("streakDays")) 
+            saveSet["streakDays"] = streakDays
+        except:
+            pass
+
+        try:
+            longestStreak = int(dataSet.get("longestStreak")) 
+            saveSet["longestStreak"] = longestStreak
+        except:
+            pass
+
+        try:
+            totalPosts = int(dataSet.get("totalPosts")) 
+            saveSet["totalPosts"] = totalPosts
+        except:
+            pass
+
+        try:
+            totalCorrectGuesses = int(dataSet.get("totalCorrectGuesses")) 
+            saveSet["totalCorrectGuesses"] = totalCorrectGuesses
+        except:
+            pass
+
+        try:
+            totalGuesses = int(dataSet.get("totalGuesses")) 
+            saveSet["totalGuesses"] = totalGuesses
+        except:
+            pass
+
+        try:
+            weeklyRank = int(dataSet.get("weeklyRank")) 
+            saveSet["weeklyRank"] = weeklyRank
+        except:
+            pass
+
+        lastPostDate = dataSet.get("lastPostDate") 
+        if lastPostDate:
+            saveSet["lastPostDate"] = lastPostDate
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "userID = %s"
+        keyValues = [userID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserStats 查询记录
+def query_mgUserStats(tableName,userID = "", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        #recID = int(recID)
+
+        #if recID > 0:
+            #sqlStr =  sqlStr + " WHERE recID = %s" 
+            #valuesList = [recID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserStats end 
+
+
+#mgUserStats end
+
+
+#mgWeeklyReel begin
+def tablename_convertor_mgWeeklyReel():
+    tableName = "mgWeeklyReel"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgWeeklyReel(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "reelID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '周回顾ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "weekStart CHAR(8) COMMENT '周开始日期 YYYYMMDD',",
+    "weekEnd CHAR(8) COMMENT '周结束日期 YYYYMMDD',",
+    "videoUrl VARCHAR(500) COMMENT '视频文件URL',",
+    "gifUrl VARCHAR(500) COMMENT 'GIF文件URL',",
+    "daysTracked TINYINT COMMENT '本周打卡天数',",
+    "topMood VARCHAR(8) COMMENT '本周主导情绪Emoji',",
+    "avgIntensity DECIMAL(3,1) COMMENT '平均情绪强度',",
+    "shareUrl VARCHAR(200) COMMENT '分享链接',",
+    "createdYMDHMS VARCHAR(16) COMMENT '生成时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgWeeklyReel表
+def drop_mgWeeklyReel(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgWeeklyReel 删除记录
+def delete_mgWeeklyReel(tableName,reelID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE reelID = %s"
+        valuesList = [reelID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgWeeklyReel 增加记录
+def insert_mgWeeklyReel(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["weekStart"] = dataSet.get("weekStart", "") 
+
+        saveSet["weekEnd"] = dataSet.get("weekEnd", "") 
+
+        saveSet["videoUrl"] = dataSet.get("videoUrl", "") 
+
+        saveSet["gifUrl"] = dataSet.get("gifUrl", "") 
+
+        try:
+            daysTracked = int(dataSet.get("daysTracked")) 
+        except:
+            daysTracked = 0 
+        saveSet["daysTracked"] = daysTracked
+
+        saveSet["topMood"] = dataSet.get("topMood", "") 
+
+        try:
+            avgIntensity = float(dataSet.get("avgIntensity")) 
+        except:
+            avgIntensity = 0 
+        saveSet["avgIntensity"] = avgIntensity
+
+        saveSet["shareUrl"] = dataSet.get("shareUrl", "") 
+
+        saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgWeeklyReel 修改记录
+def update_mgWeeklyReel(tableName,reelID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        weekStart = dataSet.get("weekStart") 
+        if weekStart:
+            saveSet["weekStart"] = weekStart
+
+        weekEnd = dataSet.get("weekEnd") 
+        if weekEnd:
+            saveSet["weekEnd"] = weekEnd
+
+        videoUrl = dataSet.get("videoUrl") 
+        if videoUrl:
+            saveSet["videoUrl"] = videoUrl
+
+        gifUrl = dataSet.get("gifUrl") 
+        if gifUrl:
+            saveSet["gifUrl"] = gifUrl
+
+        try:
+            daysTracked = int(dataSet.get("daysTracked")) 
+            saveSet["daysTracked"] = daysTracked
+        except:
+            pass
+
+        topMood = dataSet.get("topMood") 
+        if topMood:
+            saveSet["topMood"] = topMood
+
+        try:
+            avgIntensity = float(dataSet.get("avgIntensity")) 
+            saveSet["avgIntensity"] = avgIntensity
+        except:
+            pass
+
+        shareUrl = dataSet.get("shareUrl") 
+        if shareUrl:
+            saveSet["shareUrl"] = shareUrl
+
+        createdYMDHMS = dataSet.get("createdYMDHMS") 
+        if createdYMDHMS:
+            saveSet["createdYMDHMS"] = createdYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "reelID = %s"
+        keyValues = [reelID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgWeeklyReel 查询记录
+def query_mgWeeklyReel(tableName,reelID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            reelID = int(reelID)
+        except:
+            reelID = 0
+
+        if reelID > 0:
+            sqlStr =  sqlStr + " WHERE reelID = %s" 
+            valuesList = [reelID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgWeeklyReel end 
+
+
+#mgWeeklyReel end
+
+#mindgram end
+
+
+
+#mindgram begin
+
+
+#mgAnnualFilm begin
+def tablename_convertor_mgAnnualFilm():
+    tableName = "mgAnnualFilm"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgAnnualFilm(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "filmID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '年度电影ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "filmYear CHAR(4) COMMENT '年度 YYYY',",
+    "videoUrl VARCHAR(500) COMMENT '视频文件URL',",
+    "duration SMALLINT COMMENT '视频时长 秒',",
+    "scenesData TEXT COMMENT '场景数据 JSON 包含四章场景',",
+    "resilienceScore TINYINT COMMENT '韧性评分 0-100',",
+    "headlineStats TEXT COMMENT '六项核心数据 JSON',",
+    "narrationScript TEXT COMMENT '旁白脚本 TEXT',",
+    "exportUrl VARCHAR(500) COMMENT '导出分享URL',",
+    "chapterData TEXT COMMENT '章节跳转数据 JSON',",
+    "createdYMDHMS VARCHAR(16) COMMENT '生成时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgAnnualFilm表
+def drop_mgAnnualFilm(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgAnnualFilm 删除记录
+def delete_mgAnnualFilm(tableName,filmID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE filmID = %s"
+        valuesList = [filmID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgAnnualFilm 增加记录
+def insert_mgAnnualFilm(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["filmYear"] = dataSet.get("filmYear", "") 
+
+        saveSet["videoUrl"] = dataSet.get("videoUrl", "") 
+
+        try:
+            duration = int(dataSet.get("duration")) 
+        except:
+            duration = 0 
+        saveSet["duration"] = duration
+
+        saveSet["scenesData"] = dataSet.get("scenesData", "") 
+
+        try:
+            resilienceScore = int(dataSet.get("resilienceScore")) 
+        except:
+            resilienceScore = 0 
+        saveSet["resilienceScore"] = resilienceScore
+
+        saveSet["headlineStats"] = dataSet.get("headlineStats", "") 
+
+        saveSet["narrationScript"] = dataSet.get("narrationScript", "") 
+
+        saveSet["exportUrl"] = dataSet.get("exportUrl", "") 
+
+        saveSet["chapterData"] = dataSet.get("chapterData", "") 
+
+        saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgAnnualFilm 修改记录
+def update_mgAnnualFilm(tableName,filmID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        filmYear = dataSet.get("filmYear") 
+        if filmYear:
+            saveSet["filmYear"] = filmYear
+
+        videoUrl = dataSet.get("videoUrl") 
+        if videoUrl:
+            saveSet["videoUrl"] = videoUrl
+
+        try:
+            duration = int(dataSet.get("duration")) 
+            saveSet["duration"] = duration
+        except:
+            pass
+
+        scenesData = dataSet.get("scenesData") 
+        if scenesData:
+            saveSet["scenesData"] = scenesData
+
+        try:
+            resilienceScore = int(dataSet.get("resilienceScore")) 
+            saveSet["resilienceScore"] = resilienceScore
+        except:
+            pass
+
+        headlineStats = dataSet.get("headlineStats") 
+        if headlineStats:
+            saveSet["headlineStats"] = headlineStats
+
+        narrationScript = dataSet.get("narrationScript") 
+        if narrationScript:
+            saveSet["narrationScript"] = narrationScript
+
+        exportUrl = dataSet.get("exportUrl") 
+        if exportUrl:
+            saveSet["exportUrl"] = exportUrl
+
+        chapterData = dataSet.get("chapterData") 
+        if chapterData:
+            saveSet["chapterData"] = chapterData
+
+        createdYMDHMS = dataSet.get("createdYMDHMS") 
+        if createdYMDHMS:
+            saveSet["createdYMDHMS"] = createdYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "filmID = %s"
+        keyValues = [filmID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgAnnualFilm 查询记录
+def query_mgAnnualFilm(tableName,filmID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            filmID = int(filmID)
+        except:
+            filmID = 0
+
+        if filmID > 0:
+            sqlStr =  sqlStr + " WHERE filmID = %s" 
+            valuesList = [filmID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgAnnualFilm end 
+
+
+#mgAnnualFilm end
+
+
+#mgBadgeDef begin
+def tablename_convertor_mgBadgeDef():
+    tableName = "mgBadgeDef"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgBadgeDef(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "badgeID VARCHAR(16) PRIMARY KEY COMMENT '徽章ID',",
+    "badgeName VARCHAR(40) COMMENT '徽章名称',",
+    "badgeIcon VARCHAR(200) COMMENT '徽章图标URL',",
+    "`description` VARCHAR(200) COMMENT '获得条件描述',",
+    "conditionType VARCHAR(32) COMMENT '条件类型 STREAK/GUESS/POST/SPECIAL',",
+    "conditionValue SMALLINT COMMENT '条件数值',",
+    "sortOrder SMALLINT COMMENT '排序',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgBadgeDef表
+def drop_mgBadgeDef(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgBadgeDef 删除记录
+def delete_mgBadgeDef(tableName,badgeID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE badgeID = %s"
+        valuesList = [badgeID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgBadgeDef 增加记录
+def insert_mgBadgeDef(tableName,badgeID,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["badgeID"] = dataSet.get("badgeID", "") 
+
+        saveSet["badgeName"] = dataSet.get("badgeName", "") 
+
+        saveSet["badgeIcon"] = dataSet.get("badgeIcon", "") 
+
+        saveSet["description"] = dataSet.get("description", "") 
+
+        saveSet["conditionType"] = dataSet.get("conditionType", "") 
+
+        try:
+            conditionValue = int(dataSet.get("conditionValue")) 
+        except:
+            conditionValue = 0 
+        saveSet["conditionValue"] = conditionValue
+
+        try:
+            sortOrder = int(dataSet.get("sortOrder")) 
+        except:
+            sortOrder = 0 
+        saveSet["sortOrder"] = sortOrder
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgBadgeDef 修改记录
+def update_mgBadgeDef(tableName,badgeID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        badgeName = dataSet.get("badgeName") 
+        if badgeName:
+            saveSet["badgeName"] = badgeName
+
+        badgeIcon = dataSet.get("badgeIcon") 
+        if badgeIcon:
+            saveSet["badgeIcon"] = badgeIcon
+
+        description = dataSet.get("description") 
+        if description:
+            saveSet["description"] = description
+
+        conditionType = dataSet.get("conditionType") 
+        if conditionType:
+            saveSet["conditionType"] = conditionType
+
+        try:
+            conditionValue = int(dataSet.get("conditionValue")) 
+            saveSet["conditionValue"] = conditionValue
+        except:
+            pass
+
+        try:
+            sortOrder = int(dataSet.get("sortOrder")) 
+            saveSet["sortOrder"] = sortOrder
+        except:
+            pass
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "badgeID = %s"
+        keyValues = [badgeID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgBadgeDef 查询记录
+def query_mgBadgeDef(tableName,badgeID = "", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        #recID = int(recID)
+
+        #if recID > 0:
+            #sqlStr =  sqlStr + " WHERE recID = %s" 
+            #valuesList = [recID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgBadgeDef end 
+
+
+#mgBadgeDef end
+
+
+#mgFriend begin
+def tablename_convertor_mgFriend():
+    tableName = "mgFriend"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgFriend(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "relationID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '好友关系ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "friendID VARCHAR(32) NOT NULL COMMENT '好友用户ID',",
+    "`status` CHAR(1) COMMENT '关系状态 0=请求中 1=已接受 2=已拒绝 3=已拉黑',",
+    "requestMsg VARCHAR(100) COMMENT '添加好友附言',",
+    "createYMDHMS VARCHAR(16) COMMENT '建立关系时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgFriend表
+def drop_mgFriend(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgFriend 删除记录
+def delete_mgFriend(tableName,relationID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE relationID = %s"
+        valuesList = [relationID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgFriend 增加记录
+def insert_mgFriend(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["friendID"] = dataSet.get("friendID", "") 
+
+        saveSet["status"] = dataSet.get("status", "") 
+
+        saveSet["requestMsg"] = dataSet.get("requestMsg", "") 
+
+        saveSet["createYMDHMS"] = dataSet.get("createYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgFriend 修改记录
+def update_mgFriend(tableName,relationID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        friendID = dataSet.get("friendID") 
+        if friendID:
+            saveSet["friendID"] = friendID
+
+        status = dataSet.get("status") 
+        if status:
+            saveSet["status"] = status
+
+        requestMsg = dataSet.get("requestMsg") 
+        if requestMsg:
+            saveSet["requestMsg"] = requestMsg
+
+        createYMDHMS = dataSet.get("createYMDHMS") 
+        if createYMDHMS:
+            saveSet["createYMDHMS"] = createYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "relationID = %s"
+        keyValues = [relationID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgFriend 查询记录
+def query_mgFriend(tableName,relationID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            relationID = int(relationID)
+        except:
+            relationID = 0
+
+        if relationID > 0:
+            sqlStr =  sqlStr + " WHERE relationID = %s" 
+            valuesList = [relationID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgFriend end 
+
+
+#mgFriend end
+
+
+#mgInviteLink begin
+def tablename_convertor_mgInviteLink():
+    tableName = "mgInviteLink"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgInviteLink(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "inviteID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '邀请ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '邀请人用户ID',",
+    "inviteCode VARCHAR(32) COMMENT '唯一邀请码',",
+    "usageCount SMALLINT COMMENT '已使用次数',",
+    "maxUsage SMALLINT COMMENT '最大使用次数',",
+    "expireDate CHAR(8) COMMENT '过期日期 YYYYMMDD',",
+    "`status` CHAR(1) COMMENT '状态 0=有效 1=已用完 2=已过期',",
+    "createdYMDHMS VARCHAR(16) COMMENT '创建时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgInviteLink表
+def drop_mgInviteLink(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgInviteLink 删除记录
+def delete_mgInviteLink(tableName,inviteID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE inviteID = %s"
+        valuesList = [inviteID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgInviteLink 增加记录
+def insert_mgInviteLink(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["inviteCode"] = dataSet.get("inviteCode", "") 
+
+        try:
+            usageCount = int(dataSet.get("usageCount")) 
+        except:
+            usageCount = 0 
+        saveSet["usageCount"] = usageCount
+
+        try:
+            maxUsage = int(dataSet.get("maxUsage")) 
+        except:
+            maxUsage = 0 
+        saveSet["maxUsage"] = maxUsage
+
+        saveSet["expireDate"] = dataSet.get("expireDate", "") 
+
+        saveSet["status"] = dataSet.get("status", "") 
+
+        saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgInviteLink 修改记录
+def update_mgInviteLink(tableName,inviteID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        inviteCode = dataSet.get("inviteCode") 
+        if inviteCode:
+            saveSet["inviteCode"] = inviteCode
+
+        try:
+            usageCount = int(dataSet.get("usageCount")) 
+            saveSet["usageCount"] = usageCount
+        except:
+            pass
+
+        try:
+            maxUsage = int(dataSet.get("maxUsage")) 
+            saveSet["maxUsage"] = maxUsage
+        except:
+            pass
+
+        expireDate = dataSet.get("expireDate") 
+        if expireDate:
+            saveSet["expireDate"] = expireDate
+
+        status = dataSet.get("status") 
+        if status:
+            saveSet["status"] = status
+
+        createdYMDHMS = dataSet.get("createdYMDHMS") 
+        if createdYMDHMS:
+            saveSet["createdYMDHMS"] = createdYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "inviteID = %s"
+        keyValues = [inviteID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgInviteLink 查询记录
+def query_mgInviteLink(tableName,inviteID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            inviteID = int(inviteID)
+        except:
+            inviteID = 0
+
+        if inviteID > 0:
+            sqlStr =  sqlStr + " WHERE inviteID = %s" 
+            valuesList = [inviteID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgInviteLink end 
+
+
+#mgInviteLink end
+
+
+#mgMoodGuess begin
+def tablename_convertor_mgMoodGuess():
+    tableName = "mgMoodGuess"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgMoodGuess(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "guessID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '猜测记录ID',",
+    "postID BIGINT NOT NULL COMMENT '被猜打卡贴ID',",
+    "guesserID VARCHAR(32) NOT NULL COMMENT '猜测者用户ID',",
+    "guessedEmoji VARCHAR(8) COMMENT '猜测的表情',",
+    "isCorrect CHAR(1) COMMENT '是否猜对 0=否 1=是',",
+    "pointsEarned SMALLINT COMMENT '获得积分',",
+    "guessYMDHMS VARCHAR(16) COMMENT '猜测时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgMoodGuess表
+def drop_mgMoodGuess(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgMoodGuess 删除记录
+def delete_mgMoodGuess(tableName,guessID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE guessID = %s"
+        valuesList = [guessID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodGuess 增加记录
+def insert_mgMoodGuess(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        try:
+            postID = int(dataSet.get("postID")) 
+        except:
+            postID = 0 
+        saveSet["postID"] = postID
+
+        saveSet["guesserID"] = dataSet.get("guesserID", "") 
+
+        saveSet["guessedEmoji"] = dataSet.get("guessedEmoji", "") 
+
+        saveSet["isCorrect"] = dataSet.get("isCorrect", "") 
+
+        try:
+            pointsEarned = int(dataSet.get("pointsEarned")) 
+        except:
+            pointsEarned = 0 
+        saveSet["pointsEarned"] = pointsEarned
+
+        saveSet["guessYMDHMS"] = dataSet.get("guessYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodGuess 修改记录
+def update_mgMoodGuess(tableName,guessID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        try:
+            postID = int(dataSet.get("postID")) 
+            saveSet["postID"] = postID
+        except:
+            pass
+
+        guesserID = dataSet.get("guesserID") 
+        if guesserID:
+            saveSet["guesserID"] = guesserID
+
+        guessedEmoji = dataSet.get("guessedEmoji") 
+        if guessedEmoji:
+            saveSet["guessedEmoji"] = guessedEmoji
+
+        isCorrect = dataSet.get("isCorrect") 
+        if isCorrect:
+            saveSet["isCorrect"] = isCorrect
+
+        try:
+            pointsEarned = int(dataSet.get("pointsEarned")) 
+            saveSet["pointsEarned"] = pointsEarned
+        except:
+            pass
+
+        guessYMDHMS = dataSet.get("guessYMDHMS") 
+        if guessYMDHMS:
+            saveSet["guessYMDHMS"] = guessYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "guessID = %s"
+        keyValues = [guessID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodGuess 查询记录
+def query_mgMoodGuess(tableName,guessID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            guessID = int(guessID)
+        except:
+            guessID = 0
+
+        if guessID > 0:
+            sqlStr =  sqlStr + " WHERE guessID = %s" 
+            valuesList = [guessID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodGuess end 
+
+
+#mgMoodGuess end
+
+
+#mgMoodPost begin
+def tablename_convertor_mgMoodPost():
+    tableName = "mgMoodPost"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgMoodPost(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "postID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '打卡贴ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "moodEmoji VARCHAR(8) NOT NULL COMMENT '情绪表情Emoji',",
+    "intensity TINYINT NOT NULL COMMENT '情绪强度 1-10',",
+    "hintNote VARCHAR(200) COMMENT '谜语式提示语',",
+    "isAnonymous CHAR(1) COMMENT '是否匿名 0=否 1=是',",
+    "photoUrl VARCHAR(500) COMMENT '自拍照片URL',",
+    "thumbnailUrl VARCHAR(500) COMMENT '缩略图URL',",
+    "postDate CHAR(8) COMMENT '打卡日期 YYYYMMDD',",
+    "postYMDHMS CHAR(16) COMMENT '打卡时间 YYYYMMDDHHMMSS',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgMoodPost表
+def drop_mgMoodPost(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgMoodPost 删除记录
+def delete_mgMoodPost(tableName,postID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE postID = %s"
+        valuesList = [postID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodPost 增加记录
+def insert_mgMoodPost(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["moodEmoji"] = dataSet.get("moodEmoji", "") 
+
+        try:
+            intensity = int(dataSet.get("intensity")) 
+        except:
+            intensity = 0 
+        saveSet["intensity"] = intensity
+
+        saveSet["hintNote"] = dataSet.get("hintNote", "") 
+
+        saveSet["isAnonymous"] = dataSet.get("isAnonymous", "") 
+
+        saveSet["photoUrl"] = dataSet.get("photoUrl", "") 
+
+        saveSet["thumbnailUrl"] = dataSet.get("thumbnailUrl", "") 
+
+        saveSet["postDate"] = dataSet.get("postDate", "") 
+
+        saveSet["postYMDHMS"] = dataSet.get("postYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodPost 修改记录
+def update_mgMoodPost(tableName,postID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        moodEmoji = dataSet.get("moodEmoji") 
+        if moodEmoji:
+            saveSet["moodEmoji"] = moodEmoji
+
+        try:
+            intensity = int(dataSet.get("intensity")) 
+            saveSet["intensity"] = intensity
+        except:
+            pass
+
+        hintNote = dataSet.get("hintNote") 
+        if hintNote:
+            saveSet["hintNote"] = hintNote
+
+        isAnonymous = dataSet.get("isAnonymous") 
+        if isAnonymous:
+            saveSet["isAnonymous"] = isAnonymous
+
+        photoUrl = dataSet.get("photoUrl") 
+        if photoUrl:
+            saveSet["photoUrl"] = photoUrl
+
+        thumbnailUrl = dataSet.get("thumbnailUrl") 
+        if thumbnailUrl:
+            saveSet["thumbnailUrl"] = thumbnailUrl
+
+        postDate = dataSet.get("postDate") 
+        if postDate:
+            saveSet["postDate"] = postDate
+
+        postYMDHMS = dataSet.get("postYMDHMS") 
+        if postYMDHMS:
+            saveSet["postYMDHMS"] = postYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "postID = %s"
+        keyValues = [postID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodPost 查询记录
+def query_mgMoodPost(tableName,postID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            postID = int(postID)
+        except:
+            postID = 0
+
+        if postID > 0:
+            sqlStr =  sqlStr + " WHERE postID = %s" 
+            valuesList = [postID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodPost end 
+
+
+#mgMoodPost end
+
+
+#mgMoodReaction begin
+def tablename_convertor_mgMoodReaction():
+    tableName = "mgMoodReaction"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgMoodReaction(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "reactionID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '回应记录ID',",
+    "postID BIGINT NOT NULL COMMENT '打卡贴ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '回应用户ID',",
+    "reactionType VARCHAR(8) COMMENT '回应类型 heart/tears/laugh/hug',",
+    "reactionYMDHMS VARCHAR(16) COMMENT '回应时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgMoodReaction表
+def drop_mgMoodReaction(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgMoodReaction 删除记录
+def delete_mgMoodReaction(tableName,reactionID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE reactionID = %s"
+        valuesList = [reactionID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodReaction 增加记录
+def insert_mgMoodReaction(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        try:
+            postID = int(dataSet.get("postID")) 
+        except:
+            postID = 0 
+        saveSet["postID"] = postID
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["reactionType"] = dataSet.get("reactionType", "") 
+
+        saveSet["reactionYMDHMS"] = dataSet.get("reactionYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodReaction 修改记录
+def update_mgMoodReaction(tableName,reactionID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        try:
+            postID = int(dataSet.get("postID")) 
+            saveSet["postID"] = postID
+        except:
+            pass
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        reactionType = dataSet.get("reactionType") 
+        if reactionType:
+            saveSet["reactionType"] = reactionType
+
+        reactionYMDHMS = dataSet.get("reactionYMDHMS") 
+        if reactionYMDHMS:
+            saveSet["reactionYMDHMS"] = reactionYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "reactionID = %s"
+        keyValues = [reactionID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodReaction 查询记录
+def query_mgMoodReaction(tableName,reactionID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            reactionID = int(reactionID)
+        except:
+            reactionID = 0
+
+        if reactionID > 0:
+            sqlStr =  sqlStr + " WHERE reactionID = %s" 
+            valuesList = [reactionID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgMoodReaction end 
+
+
+#mgMoodReaction end
+
+
+#mgQuarterlyReport begin
+def tablename_convertor_mgQuarterlyReport():
+    tableName = "mgQuarterlyReport"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgQuarterlyReport(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "reportID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '季度报告ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "quarterStart CHAR(8) COMMENT '季度开始日期 YYYYMMDD',",
+    "quarterEnd CHAR(8) COMMENT '季度结束日期 YYYYMMDD',",
+    "avgMoodScore DECIMAL(3,1) COMMENT '平均情绪得分',",
+    "positiveDaysPct DECIMAL(3,1) COMMENT '积极情绪天数占比',",
+    "maxStreak SMALLINT COMMENT '季度最长连续打卡',",
+    "loggingRate DECIMAL(3,1) COMMENT '打卡覆盖率',",
+    "emojiBreakdown TEXT COMMENT '表情分布数据 JSON',",
+    "monthlyTrend TEXT COMMENT '月度趋势数据 JSON',",
+    "diagnosisFindings TEXT COMMENT '诊断五项发现 JSON',",
+    "actionCards TEXT COMMENT '六张行动建议卡片 JSON',",
+    "aiModelVersion VARCHAR(16) COMMENT 'AI模型版本',",
+    "createdYMDHMS VARCHAR(16) COMMENT '生成时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgQuarterlyReport表
+def drop_mgQuarterlyReport(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgQuarterlyReport 删除记录
+def delete_mgQuarterlyReport(tableName,reportID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE reportID = %s"
+        valuesList = [reportID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgQuarterlyReport 增加记录
+def insert_mgQuarterlyReport(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["quarterStart"] = dataSet.get("quarterStart", "") 
+
+        saveSet["quarterEnd"] = dataSet.get("quarterEnd", "") 
+
+        try:
+            avgMoodScore = float(dataSet.get("avgMoodScore")) 
+        except:
+            avgMoodScore = 0 
+        saveSet["avgMoodScore"] = avgMoodScore
+
+        try:
+            positiveDaysPct = float(dataSet.get("positiveDaysPct")) 
+        except:
+            positiveDaysPct = 0 
+        saveSet["positiveDaysPct"] = positiveDaysPct
+
+        try:
+            maxStreak = int(dataSet.get("maxStreak")) 
+        except:
+            maxStreak = 0 
+        saveSet["maxStreak"] = maxStreak
+
+        try:
+            loggingRate = float(dataSet.get("loggingRate")) 
+        except:
+            loggingRate = 0 
+        saveSet["loggingRate"] = loggingRate
+
+        saveSet["emojiBreakdown"] = dataSet.get("emojiBreakdown", "") 
+
+        saveSet["monthlyTrend"] = dataSet.get("monthlyTrend", "") 
+
+        saveSet["diagnosisFindings"] = dataSet.get("diagnosisFindings", "") 
+
+        saveSet["actionCards"] = dataSet.get("actionCards", "") 
+
+        saveSet["aiModelVersion"] = dataSet.get("aiModelVersion", "") 
+
+        saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgQuarterlyReport 修改记录
+def update_mgQuarterlyReport(tableName,reportID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        quarterStart = dataSet.get("quarterStart") 
+        if quarterStart:
+            saveSet["quarterStart"] = quarterStart
+
+        quarterEnd = dataSet.get("quarterEnd") 
+        if quarterEnd:
+            saveSet["quarterEnd"] = quarterEnd
+
+        try:
+            avgMoodScore = float(dataSet.get("avgMoodScore")) 
+            saveSet["avgMoodScore"] = avgMoodScore
+        except:
+            pass
+
+        try:
+            positiveDaysPct = float(dataSet.get("positiveDaysPct")) 
+            saveSet["positiveDaysPct"] = positiveDaysPct
+        except:
+            pass
+
+        try:
+            maxStreak = int(dataSet.get("maxStreak")) 
+            saveSet["maxStreak"] = maxStreak
+        except:
+            pass
+
+        try:
+            loggingRate = float(dataSet.get("loggingRate")) 
+            saveSet["loggingRate"] = loggingRate
+        except:
+            pass
+
+        emojiBreakdown = dataSet.get("emojiBreakdown") 
+        if emojiBreakdown:
+            saveSet["emojiBreakdown"] = emojiBreakdown
+
+        monthlyTrend = dataSet.get("monthlyTrend") 
+        if monthlyTrend:
+            saveSet["monthlyTrend"] = monthlyTrend
+
+        diagnosisFindings = dataSet.get("diagnosisFindings") 
+        if diagnosisFindings:
+            saveSet["diagnosisFindings"] = diagnosisFindings
+
+        actionCards = dataSet.get("actionCards") 
+        if actionCards:
+            saveSet["actionCards"] = actionCards
+
+        aiModelVersion = dataSet.get("aiModelVersion") 
+        if aiModelVersion:
+            saveSet["aiModelVersion"] = aiModelVersion
+
+        createdYMDHMS = dataSet.get("createdYMDHMS") 
+        if createdYMDHMS:
+            saveSet["createdYMDHMS"] = createdYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "reportID = %s"
+        keyValues = [reportID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgQuarterlyReport 查询记录
+def query_mgQuarterlyReport(tableName,reportID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            reportID = int(reportID)
+        except:
+            reportID = 0
+
+        if reportID > 0:
+            sqlStr =  sqlStr + " WHERE reportID = %s" 
+            valuesList = [reportID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgQuarterlyReport end 
+
+
+#mgQuarterlyReport end
+
+
+#mgSystemConfig begin
+def tablename_convertor_mgSystemConfig():
+    tableName = "mgSystemConfig"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgSystemConfig(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "configID VARCHAR(32) PRIMARY KEY COMMENT '配置项ID',",
+    "configValue VARCHAR(500) COMMENT '配置值',",
+    "configType VARCHAR(16) COMMENT '配置类型 STRING/INT/FLOAT/JSON',",
+    "`description` VARCHAR(200) COMMENT '配置说明',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgSystemConfig表
+def drop_mgSystemConfig(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgSystemConfig 删除记录
+def delete_mgSystemConfig(tableName,configID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE configID = %s"
+        valuesList = [configID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgSystemConfig 增加记录
+def insert_mgSystemConfig(tableName,configID,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["configID"] = dataSet.get("configID", "") 
+
+        saveSet["configValue"] = dataSet.get("configValue", "") 
+
+        saveSet["configType"] = dataSet.get("configType", "") 
+
+        saveSet["description"] = dataSet.get("description", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgSystemConfig 修改记录
+def update_mgSystemConfig(tableName,configID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        configValue = dataSet.get("configValue") 
+        if configValue:
+            saveSet["configValue"] = configValue
+
+        configType = dataSet.get("configType") 
+        if configType:
+            saveSet["configType"] = configType
+
+        description = dataSet.get("description") 
+        if description:
+            saveSet["description"] = description
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "configID = %s"
+        keyValues = [configID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgSystemConfig 查询记录
+def query_mgSystemConfig(tableName,configID = "", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        #recID = int(recID)
+
+        #if recID > 0:
+            #sqlStr =  sqlStr + " WHERE recID = %s" 
+            #valuesList = [recID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgSystemConfig end 
+
+
+#mgSystemConfig end
+
+
+#mgTcmDiagnosis begin
+def tablename_convertor_mgTcmDiagnosis():
+    tableName = "mgTcmDiagnosis"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgTcmDiagnosis(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "tcmID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '中医诊断ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "quarterStart CHAR(8) COMMENT '关联季度开始',",
+    "quarterEnd CHAR(8) COMMENT '关联季度结束',",
+    "primaryPattern VARCHAR(60) COMMENT '主证型 如:肝气郁结',",
+    "secondaryPattern TEXT COMMENT '次证型 JSON',",
+    "radarChartData TEXT COMMENT '五行雷达图数据 JSON',",
+    "dietPlan TEXT COMMENT '饮食方案 JSON 含时辰/食材',",
+    "sleepPlan TEXT COMMENT '睡眠方案 JSON 含就寝时间/流程/穴位',",
+    "bodyClockData TEXT COMMENT '子午流注时钟数据 JSON',",
+    "weeklyPlan TEXT COMMENT '周养生计划 JSON',",
+    "aiModelVersion VARCHAR(16) COMMENT 'AI模型版本',",
+    "createdYMDHMS VARCHAR(16) COMMENT '生成时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgTcmDiagnosis表
+def drop_mgTcmDiagnosis(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgTcmDiagnosis 删除记录
+def delete_mgTcmDiagnosis(tableName,tcmID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE tcmID = %s"
+        valuesList = [tcmID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgTcmDiagnosis 增加记录
+def insert_mgTcmDiagnosis(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["quarterStart"] = dataSet.get("quarterStart", "") 
+
+        saveSet["quarterEnd"] = dataSet.get("quarterEnd", "") 
+
+        saveSet["primaryPattern"] = dataSet.get("primaryPattern", "") 
+
+        saveSet["secondaryPattern"] = dataSet.get("secondaryPattern", "") 
+
+        saveSet["radarChartData"] = dataSet.get("radarChartData", "") 
+
+        saveSet["dietPlan"] = dataSet.get("dietPlan", "") 
+
+        saveSet["sleepPlan"] = dataSet.get("sleepPlan", "") 
+
+        saveSet["bodyClockData"] = dataSet.get("bodyClockData", "") 
+
+        saveSet["weeklyPlan"] = dataSet.get("weeklyPlan", "") 
+
+        saveSet["aiModelVersion"] = dataSet.get("aiModelVersion", "") 
+
+        saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgTcmDiagnosis 修改记录
+def update_mgTcmDiagnosis(tableName,tcmID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        quarterStart = dataSet.get("quarterStart") 
+        if quarterStart:
+            saveSet["quarterStart"] = quarterStart
+
+        quarterEnd = dataSet.get("quarterEnd") 
+        if quarterEnd:
+            saveSet["quarterEnd"] = quarterEnd
+
+        primaryPattern = dataSet.get("primaryPattern") 
+        if primaryPattern:
+            saveSet["primaryPattern"] = primaryPattern
+
+        secondaryPattern = dataSet.get("secondaryPattern") 
+        if secondaryPattern:
+            saveSet["secondaryPattern"] = secondaryPattern
+
+        radarChartData = dataSet.get("radarChartData") 
+        if radarChartData:
+            saveSet["radarChartData"] = radarChartData
+
+        dietPlan = dataSet.get("dietPlan") 
+        if dietPlan:
+            saveSet["dietPlan"] = dietPlan
+
+        sleepPlan = dataSet.get("sleepPlan") 
+        if sleepPlan:
+            saveSet["sleepPlan"] = sleepPlan
+
+        bodyClockData = dataSet.get("bodyClockData") 
+        if bodyClockData:
+            saveSet["bodyClockData"] = bodyClockData
+
+        weeklyPlan = dataSet.get("weeklyPlan") 
+        if weeklyPlan:
+            saveSet["weeklyPlan"] = weeklyPlan
+
+        aiModelVersion = dataSet.get("aiModelVersion") 
+        if aiModelVersion:
+            saveSet["aiModelVersion"] = aiModelVersion
+
+        createdYMDHMS = dataSet.get("createdYMDHMS") 
+        if createdYMDHMS:
+            saveSet["createdYMDHMS"] = createdYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "tcmID = %s"
+        keyValues = [tcmID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgTcmDiagnosis 查询记录
+def query_mgTcmDiagnosis(tableName,tcmID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            tcmID = int(tcmID)
+        except:
+            tcmID = 0
+
+        if tcmID > 0:
+            sqlStr =  sqlStr + " WHERE tcmID = %s" 
+            valuesList = [tcmID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgTcmDiagnosis end 
+
+
+#mgTcmDiagnosis end
+
+
+#mgUserBadge begin
+def tablename_convertor_mgUserBadge():
+    tableName = "mgUserBadge"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgUserBadge(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "recordID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '记录ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "badgeID VARCHAR(16) NOT NULL COMMENT '徽章ID',",
+    "earnYMDHMS VARCHAR(16) COMMENT '获得时间',",
+    "isWearing CHAR(1) COMMENT '是否佩戴中 0=否 1=是',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgUserBadge表
+def drop_mgUserBadge(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgUserBadge 删除记录
+def delete_mgUserBadge(tableName,recordID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE recordID = %s"
+        valuesList = [recordID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserBadge 增加记录
+def insert_mgUserBadge(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["badgeID"] = dataSet.get("badgeID", "") 
+
+        saveSet["earnYMDHMS"] = dataSet.get("earnYMDHMS", "") 
+
+        saveSet["isWearing"] = dataSet.get("isWearing", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserBadge 修改记录
+def update_mgUserBadge(tableName,recordID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        badgeID = dataSet.get("badgeID") 
+        if badgeID:
+            saveSet["badgeID"] = badgeID
+
+        earnYMDHMS = dataSet.get("earnYMDHMS") 
+        if earnYMDHMS:
+            saveSet["earnYMDHMS"] = earnYMDHMS
+
+        isWearing = dataSet.get("isWearing") 
+        if isWearing:
+            saveSet["isWearing"] = isWearing
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "recordID = %s"
+        keyValues = [recordID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserBadge 查询记录
+def query_mgUserBadge(tableName,recordID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            recordID = int(recordID)
+        except:
+            recordID = 0
+
+        if recordID > 0:
+            sqlStr =  sqlStr + " WHERE recordID = %s" 
+            valuesList = [recordID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserBadge end 
+
+
+#mgUserBadge end
+
+
+#mgUserStats begin
+def tablename_convertor_mgUserStats():
+    tableName = "mgUserStats"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgUserStats(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "userID VARCHAR(32) PRIMARY KEY COMMENT '用户ID',",
+    "totalScore INT COMMENT '累计总积分',",
+    "weeklyScore INT COMMENT '本周积分',",
+    "streakDays SMALLINT COMMENT '当前连续打卡天数',",
+    "longestStreak SMALLINT COMMENT '历史最长连续天数',",
+    "totalPosts INT COMMENT '累计发帖数',",
+    "totalCorrectGuesses INT COMMENT '累计正确猜测数',",
+    "totalGuesses INT COMMENT '累计总猜测数',",
+    "weeklyRank SMALLINT COMMENT '本周排名',",
+    "lastPostDate CHAR(8) COMMENT '最后打卡日期',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgUserStats表
+def drop_mgUserStats(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgUserStats 删除记录
+def delete_mgUserStats(tableName,userID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE userID = %s"
+        valuesList = [userID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserStats 增加记录
+def insert_mgUserStats(tableName,userID,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        try:
+            totalScore = int(dataSet.get("totalScore")) 
+        except:
+            totalScore = 0 
+        saveSet["totalScore"] = totalScore
+
+        try:
+            weeklyScore = int(dataSet.get("weeklyScore")) 
+        except:
+            weeklyScore = 0 
+        saveSet["weeklyScore"] = weeklyScore
+
+        try:
+            streakDays = int(dataSet.get("streakDays")) 
+        except:
+            streakDays = 0 
+        saveSet["streakDays"] = streakDays
+
+        try:
+            longestStreak = int(dataSet.get("longestStreak")) 
+        except:
+            longestStreak = 0 
+        saveSet["longestStreak"] = longestStreak
+
+        try:
+            totalPosts = int(dataSet.get("totalPosts")) 
+        except:
+            totalPosts = 0 
+        saveSet["totalPosts"] = totalPosts
+
+        try:
+            totalCorrectGuesses = int(dataSet.get("totalCorrectGuesses")) 
+        except:
+            totalCorrectGuesses = 0 
+        saveSet["totalCorrectGuesses"] = totalCorrectGuesses
+
+        try:
+            totalGuesses = int(dataSet.get("totalGuesses")) 
+        except:
+            totalGuesses = 0 
+        saveSet["totalGuesses"] = totalGuesses
+
+        try:
+            weeklyRank = int(dataSet.get("weeklyRank")) 
+        except:
+            weeklyRank = 0 
+        saveSet["weeklyRank"] = weeklyRank
+
+        saveSet["lastPostDate"] = dataSet.get("lastPostDate", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserStats 修改记录
+def update_mgUserStats(tableName,userID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        try:
+            totalScore = int(dataSet.get("totalScore")) 
+            saveSet["totalScore"] = totalScore
+        except:
+            pass
+
+        try:
+            weeklyScore = int(dataSet.get("weeklyScore")) 
+            saveSet["weeklyScore"] = weeklyScore
+        except:
+            pass
+
+        try:
+            streakDays = int(dataSet.get("streakDays")) 
+            saveSet["streakDays"] = streakDays
+        except:
+            pass
+
+        try:
+            longestStreak = int(dataSet.get("longestStreak")) 
+            saveSet["longestStreak"] = longestStreak
+        except:
+            pass
+
+        try:
+            totalPosts = int(dataSet.get("totalPosts")) 
+            saveSet["totalPosts"] = totalPosts
+        except:
+            pass
+
+        try:
+            totalCorrectGuesses = int(dataSet.get("totalCorrectGuesses")) 
+            saveSet["totalCorrectGuesses"] = totalCorrectGuesses
+        except:
+            pass
+
+        try:
+            totalGuesses = int(dataSet.get("totalGuesses")) 
+            saveSet["totalGuesses"] = totalGuesses
+        except:
+            pass
+
+        try:
+            weeklyRank = int(dataSet.get("weeklyRank")) 
+            saveSet["weeklyRank"] = weeklyRank
+        except:
+            pass
+
+        lastPostDate = dataSet.get("lastPostDate") 
+        if lastPostDate:
+            saveSet["lastPostDate"] = lastPostDate
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "userID = %s"
+        keyValues = [userID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserStats 查询记录
+def query_mgUserStats(tableName,userID = "", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        #recID = int(recID)
+
+        #if recID > 0:
+            #sqlStr =  sqlStr + " WHERE recID = %s" 
+            #valuesList = [recID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgUserStats end 
+
+
+#mgUserStats end
+
+
+#mgWeeklyReel begin
+def tablename_convertor_mgWeeklyReel():
+    tableName = "mgWeeklyReel"
+    tableName = tableName.lower()
+    return tableName
+
+
+def create_mgWeeklyReel(tableName):
+    aList = ["CREATE TABLE IF NOT EXISTS %s("
+    "reelID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '周回顾ID',",
+    "userID VARCHAR(32) NOT NULL COMMENT '用户ID',",
+    "weekStart CHAR(8) COMMENT '周开始日期 YYYYMMDD',",
+    "weekEnd CHAR(8) COMMENT '周结束日期 YYYYMMDD',",
+    "videoUrl VARCHAR(500) COMMENT '视频文件URL',",
+    "gifUrl VARCHAR(500) COMMENT 'GIF文件URL',",
+    "daysTracked TINYINT COMMENT '本周打卡天数',",
+    "topMood VARCHAR(8) COMMENT '本周主导情绪Emoji',",
+    "avgIntensity DECIMAL(3,1) COMMENT '平均情绪强度',",
+    "shareUrl VARCHAR(200) COMMENT '分享链接',",
+    "createdYMDHMS VARCHAR(16) COMMENT '生成时间',",
+    "regID VARCHAR(32) COMMENT '注册ID',",
+    "regYMDHMS VARCHAR(16) COMMENT '注册年月日',",
+    "modifyID VARCHAR(32) COMMENT '修改用户ID',",
+    "modifyYMDHMS VARCHAR(16) COMMENT '修改年月日',",
+    "delFlag CHAR(1) COMMENT '删除标记'"
+    ")  ENGINE=INNODB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ]
+    tempStr = "".join(aList)
+    sqlStr = tempStr % (tableName)
+    rtn = mysqlDB.executeWrite(sqlStr)
+    result = chkTableExist(tableName)
+    if result:
+        pass
+        #sqlStr = "CREATE INDEX {1} ON {0}({1}) ".format(tableName, "indexKey")
+        #rtn = mysqlDB.executeWrite(sqlStr)
+        #sqlStr = "ALTER TABLE {0} auto_increment = {1} ".format(tableName,auto_increment_default_value)
+        #rtn = mysqlDB.executeWrite(sqlStr)
+
+    return result
+
+
+#删除mgWeeklyReel表
+def drop_mgWeeklyReel(tableName):
+    result = dropTableGeneral(tableName)
+    return result
+
+
+#mgWeeklyReel 删除记录
+def delete_mgWeeklyReel(tableName,reelID):
+    result = 0
+    sqlStr = f"DELETE FROM {tableName}"
+    try:
+
+        sqlStr += " WHERE reelID = %s"
+        valuesList = [reelID] 
+        result = mysqlDB.executeWrite(sqlStr,tuple(valuesList))
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgWeeklyReel 增加记录
+def insert_mgWeeklyReel(tableName,dataSet):
+    result = 0
+    try:
+
+        saveSet = {}
+
+        saveSet["userID"] = dataSet.get("userID", "") 
+
+        saveSet["weekStart"] = dataSet.get("weekStart", "") 
+
+        saveSet["weekEnd"] = dataSet.get("weekEnd", "") 
+
+        saveSet["videoUrl"] = dataSet.get("videoUrl", "") 
+
+        saveSet["gifUrl"] = dataSet.get("gifUrl", "") 
+
+        try:
+            daysTracked = int(dataSet.get("daysTracked")) 
+        except:
+            daysTracked = 0 
+        saveSet["daysTracked"] = daysTracked
+
+        saveSet["topMood"] = dataSet.get("topMood", "") 
+
+        try:
+            avgIntensity = float(dataSet.get("avgIntensity")) 
+        except:
+            avgIntensity = 0 
+        saveSet["avgIntensity"] = avgIntensity
+
+        saveSet["shareUrl"] = dataSet.get("shareUrl", "") 
+
+        saveSet["createdYMDHMS"] = dataSet.get("createdYMDHMS", "") 
+
+        saveSet["regID"] = dataSet.get("regID", "") 
+
+        saveSet["regYMDHMS"] = dataSet.get("regYMDHMS", "") 
+
+        saveSet["delFlag"] = dataSet.get("delFlag", "0") 
+
+        result = insertTableGeneral(tableName, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgWeeklyReel 修改记录
+def update_mgWeeklyReel(tableName,reelID,dataSet):
+    result = -2
+    try:
+        saveSet = {}
+
+        userID = dataSet.get("userID") 
+        if userID:
+            saveSet["userID"] = userID
+
+        weekStart = dataSet.get("weekStart") 
+        if weekStart:
+            saveSet["weekStart"] = weekStart
+
+        weekEnd = dataSet.get("weekEnd") 
+        if weekEnd:
+            saveSet["weekEnd"] = weekEnd
+
+        videoUrl = dataSet.get("videoUrl") 
+        if videoUrl:
+            saveSet["videoUrl"] = videoUrl
+
+        gifUrl = dataSet.get("gifUrl") 
+        if gifUrl:
+            saveSet["gifUrl"] = gifUrl
+
+        try:
+            daysTracked = int(dataSet.get("daysTracked")) 
+            saveSet["daysTracked"] = daysTracked
+        except:
+            pass
+
+        topMood = dataSet.get("topMood") 
+        if topMood:
+            saveSet["topMood"] = topMood
+
+        try:
+            avgIntensity = float(dataSet.get("avgIntensity")) 
+            saveSet["avgIntensity"] = avgIntensity
+        except:
+            pass
+
+        shareUrl = dataSet.get("shareUrl") 
+        if shareUrl:
+            saveSet["shareUrl"] = shareUrl
+
+        createdYMDHMS = dataSet.get("createdYMDHMS") 
+        if createdYMDHMS:
+            saveSet["createdYMDHMS"] = createdYMDHMS
+
+        modifyID = dataSet.get("modifyID") 
+        if modifyID:
+            saveSet["modifyID"] = modifyID
+
+        modifyYMDHMS = dataSet.get("modifyYMDHMS") 
+        if modifyYMDHMS:
+            saveSet["modifyYMDHMS"] = modifyYMDHMS
+
+        delFlag = dataSet.get("delFlag") 
+        if delFlag:
+            saveSet["delFlag"] = delFlag
+
+        keySqlstr = "reelID = %s"
+        keyValues = [reelID]
+
+        result = updateTableGeneral(tableName, keySqlstr,  keyValues, saveSet)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgWeeklyReel 查询记录
+def query_mgWeeklyReel(tableName,reelID = "0", delFlag = "0", mode = "full",limitNum = comGD._DEF_MAX_QUERY_LIMIT_NUM):
+    result = []
+    columns = "*"
+    valuesList = []
+    sqlStr = f"SELECT {columns} FROM {tableName}"
+
+    try:
+
+        try:
+            reelID = int(reelID)
+        except:
+            reelID = 0
+
+        if reelID > 0:
+            sqlStr =  sqlStr + " WHERE reelID = %s" 
+            valuesList = [reelID]  
+
+        #if limitNum > 0:
+            #sqlStr += " LIMIT {0}".format(limitNum)
+
+        rtn = mysqlDB.executeRead(sqlStr, tuple(valuesList))
+        if rtn > 0:
+            dataList = mysqlDB.fetchAll()
+            dataList = dataFormatConvert(dataList)
+            result = list(dataList)
+
+    except Exception as e:
+        traceMsg = traceback.format_exc().strip("")
+        errMsg = f"{e},{traceMsg}"
+        # if _DEBUG:
+            # _LOG.error(f"{errMsg}")
+
+    return result
+
+
+#mgWeeklyReel end 
+
+
+#mgWeeklyReel end
+
+#mindgram end
+
+
+
 def checkMySqlDataBase():
     YMDHMS = misc.getTime()
     currYear = YMDHMS[0:4]
@@ -1508,6 +7180,47 @@ def checkMySqlDataBase():
     if chkTableExist(tableName) == False:
         rtn = create_hwinfo_report_record(tableName)
 
+    #mindgram tables
+    tableName = tablename_convertor_mgAnnualFilm()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgAnnualFilm(tableName)
+    tableName = tablename_convertor_mgBadgeDef()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgBadgeDef(tableName)
+    tableName = tablename_convertor_mgFriend()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgFriend(tableName)
+    tableName = tablename_convertor_mgInviteLink()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgInviteLink(tableName)
+    tableName = tablename_convertor_mgMoodGuess()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgMoodGuess(tableName)
+    tableName = tablename_convertor_mgMoodPost()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgMoodPost(tableName)
+    tableName = tablename_convertor_mgMoodReaction()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgMoodReaction(tableName)
+    tableName = tablename_convertor_mgQuarterlyReport()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgQuarterlyReport(tableName)
+    tableName = tablename_convertor_mgSystemConfig()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgSystemConfig(tableName)
+    tableName = tablename_convertor_mgTcmDiagnosis()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgTcmDiagnosis(tableName)
+    tableName = tablename_convertor_mgUserBadge()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgUserBadge(tableName)
+    tableName = tablename_convertor_mgUserStats()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgUserStats(tableName)
+    tableName = tablename_convertor_mgWeeklyReel()
+    if chkTableExist(tableName) == False:
+        rtn = create_mgWeeklyReel(tableName)
+
 
 def dropMySqlDataBase():
     YMDHMS = misc.getTime()
@@ -1521,12 +7234,53 @@ def dropMySqlDataBase():
         rtn = dropUserBasic()
 
     tableName = "USER_weChatCode"
-    if chkTableExist(tableName) == False:
-        createUserWechatCode()
+    if chkTableExist(tableName):
+        rtn = dropUserWechatCode()
 
     tableName = tablename_convertor_hwinfo_report_record()
     if chkTableExist(tableName):
         rtn = drop_hwinfo_report_record(tableName)
+
+    #mindgram tables
+    tableName = tablename_convertor_mgAnnualFilm()
+    if chkTableExist(tableName):
+        rtn = drop_mgAnnualFilm(tableName)
+    tableName = tablename_convertor_mgBadgeDef()
+    if chkTableExist(tableName):
+        rtn = drop_mgBadgeDef(tableName)
+    tableName = tablename_convertor_mgFriend()
+    if chkTableExist(tableName):
+        rtn = drop_mgFriend(tableName)
+    tableName = tablename_convertor_mgInviteLink()
+    if chkTableExist(tableName):
+        rtn = drop_mgInviteLink(tableName)
+    tableName = tablename_convertor_mgMoodGuess()
+    if chkTableExist(tableName):
+        rtn = drop_mgMoodGuess(tableName)
+    tableName = tablename_convertor_mgMoodPost()
+    if chkTableExist(tableName):
+        rtn = drop_mgMoodPost(tableName)
+    tableName = tablename_convertor_mgMoodReaction()
+    if chkTableExist(tableName):
+        rtn = drop_mgMoodReaction(tableName)
+    tableName = tablename_convertor_mgQuarterlyReport()
+    if chkTableExist(tableName):
+        rtn = drop_mgQuarterlyReport(tableName)
+    tableName = tablename_convertor_mgSystemConfig()
+    if chkTableExist(tableName):
+        rtn = drop_mgSystemConfig(tableName)
+    tableName = tablename_convertor_mgTcmDiagnosis()
+    if chkTableExist(tableName):
+        rtn = drop_mgTcmDiagnosis(tableName)
+    tableName = tablename_convertor_mgUserBadge()
+    if chkTableExist(tableName):
+        rtn = drop_mgUserBadge(tableName)
+    tableName = tablename_convertor_mgUserStats()
+    if chkTableExist(tableName):
+        rtn = drop_mgUserStats(tableName)
+    tableName = tablename_convertor_mgWeeklyReel()
+    if chkTableExist(tableName):
+        rtn = drop_mgWeeklyReel(tableName)
 
 
 checkMySqlDataBase()
