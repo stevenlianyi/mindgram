@@ -1,0 +1,50 @@
+.review-card {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  background: #FFFFFF;
+  border-left: 8rpx solid #4ECDC4;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.review-card--joy {
+  border-left-color: #FF6B6B;
+}
+
+.review-card--sad {
+  border-left-color: #7C83FD;
+}
+
+.review-card--hope {
+  border-left-color: #F9CA24;
+}
+
+.review-card__icon {
+  font-size: 64rpx;
+}
+
+.review-card__main {
+  min-width: 0;
+  flex: 1;
+}
+
+.review-card__title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1A1A2E;
+}
+
+.review-card__desc {
+  margin: 8rpx 0 16rpx;
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: #6B7280;
+}
+
+.review-card__arrow {
+  color: #9CA3AF;
+  font-size: 40rpx;
+}

@@ -1,0 +1,53 @@
+.post-preview {
+  font-size: 96rpx;
+  line-height: 1;
+}
+
+.tag-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.mood-tag {
+  min-height: 64rpx;
+  padding: 0 28rpx;
+  font-size: 26rpx;
+  color: #6B7280;
+  background: #FFFFFF;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 999rpx;
+}
+
+.mood-tag--active {
+  color: #FFFFFF;
+  background: #4ECDC4;
+  border-color: #4ECDC4;
+}
+
+.option-panel {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 112rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.option-row:last-child {
+  border-bottom: 0;
+}
+
+.option-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+
+.post-note {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}

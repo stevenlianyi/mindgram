@@ -1,0 +1,140 @@
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  padding: 32rpx;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #4ECDC4, #44B5AD);
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.hero-card::after {
+  position: absolute;
+  right: -60rpx;
+  top: -80rpx;
+  width: 240rpx;
+  height: 240rpx;
+  content: "";
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+}
+
+.hero-card__date {
+  position: relative;
+  z-index: 1;
+  font-size: 26rpx;
+  opacity: 0.86;
+}
+
+.hero-card__emoji {
+  position: relative;
+  z-index: 1;
+  margin: 24rpx 0 12rpx;
+  font-size: 96rpx;
+  line-height: 1;
+}
+
+.hero-card__hint {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 28rpx;
+  font-size: 28rpx;
+  opacity: 0.92;
+}
+
+.hero-card__cta {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  min-height: 72rpx;
+  padding: 0 40rpx;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.24);
+  border-radius: 999rpx;
+}
+
+.streak-card {
+  padding: 24rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.streak-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+
+.streak-dots {
+  display: flex;
+  gap: 14rpx;
+  margin-top: 22rpx;
+}
+
+.streak-dot {
+  flex: 1;
+  height: 16rpx;
+  background: #E5E7EB;
+  border-radius: 999rpx;
+}
+
+.streak-dot--done {
+  background: #FF6B6B;
+}
+
+.streak-dot--current {
+  background: #F9CA24;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.section-head__title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+
+.section-head__link {
+  font-size: 24rpx;
+  color: #4ECDC4;
+}
+
+.home-feed-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 22rpx;
+  margin-bottom: 16rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.home-feed-card__emoji {
+  font-size: 52rpx;
+}
+
+.home-feed-card__main {
+  min-width: 0;
+  flex: 1;
+}
+
+.home-feed-card__hint {
+  font-size: 28rpx;
+  color: #1A1A2E;
+}
+
+.home-feed-card__meta {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}

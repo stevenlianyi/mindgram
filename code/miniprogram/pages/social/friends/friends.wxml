@@ -1,0 +1,48 @@
+<view class="page">
+  <view class="nav-row">
+    <view>
+      <view class="page-title">好友</view>
+      <view class="page-subtitle">有朋友，Emoji 才会变成猜谜。</view>
+    </view>
+    <button class="btn btn--small" bindtap="handleInvite">邀请</button>
+  </view>
+
+  <view class="section panel">
+    <view class="section-title">好友列表</view>
+    <view wx:if="{{friends.length}}">
+      <view wx:for="{{friends}}" wx:key="relationID" class="friend-row">
+        <view class="avatar">👤</view>
+        <view class="friend-row__main">
+          <view class="friend-row__name">{{item.nickName || item.friendID || 'Mindgram 好友'}}</view>
+          <view class="friend-row__meta">今日: {{item.todayMood || '😊 快乐'}}</view>
+        </view>
+        <view class="friend-row__streak">{{item.streak || '🔥5天'}}</view>
+      </view>
+    </view>
+    <view class="empty" wx:else>
+      <view class="empty-emoji">👥</view>
+      <view>还没有好友</view>
+      <button class="btn btn--ghost friends-empty-action" bindtap="handleInvite">邀请第一个好友</button>
+    </view>
+  </view>
+
+  <view class="section panel">
+    <view class="section-title">好友周榜</view>
+    <view wx:for="{{leaderboard}}" wx:key="rank" class="rank-row">
+      <view class="rank-row__left">
+        <view class="rank-row__rank">{{item.rank}}</view>
+        <view class="avatar avatar--small">👤</view>
+        <view class="rank-row__name">{{item.name}}</view>
+      </view>
+      <view class="rank-row__score">{{item.score}}分</view>
+    </view>
+  </view>
+
+  <view class="section invite-card" bindtap="handleInvite">
+    <view>
+      <view class="invite-card__title">邀请好友加入</view>
+      <view class="invite-card__desc">让猜谜有第一个回应</view>
+    </view>
+    <view class="invite-card__icon">🎁</view>
+  </view>
+</view>

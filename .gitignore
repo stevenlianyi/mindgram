@@ -6,3 +6,7 @@ code/src/database/auto_gen_code*.py
 
 # Word table CSV files
 code/src/database/word_table_*.csv
+
+# Mini program dependencies and build output
+code/miniprogram/node_modules/
+code/miniprogram/miniprogram_npm/

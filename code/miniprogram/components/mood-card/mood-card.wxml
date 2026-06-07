@@ -1,0 +1,27 @@
+<view class="mood-card {{item.isAnonymous === '1' ? 'mood-card--anonymous' : ''}}">
+  <view class="mood-card__header">
+    <view class="avatar">{{item.isAnonymous === '1' ? '🎭' : '👤'}}</view>
+    <view class="mood-card__meta">
+      <view class="mood-card__name">{{item.isAnonymous === '1' ? '匿名朋友' : (item.nickName || item.userID || 'Mindgram 用户')}}</view>
+      <view class="mood-card__time">{{item.postDate || item.postYMDHMS || '2小时前'}}</view>
+    </view>
+    <view wx:if="{{item.photoUrl}}" class="tag">📸 自拍</view>
+  </view>
+
+  <image wx:if="{{item.photoUrl}}" class="mood-card__photo" src="{{item.photoUrl}}" mode="aspectFill" />
+
+  <view class="mood-card__emoji">{{item.moodEmoji || '😊'}}</view>
+  <view class="mood-card__hint">{{item.hintNote || '今天的情绪还没有留下谜语。'}}</view>
+
+  <view class="mood-card__bar">
+    <view class="mood-card__bar-label">强度 {{item.intensity || '-'}}/10</view>
+    <view class="progress-track">
+      <view class="progress-fill" style="width: {{(item.intensity || 5) * 10}}%;"></view>
+    </view>
+  </view>
+
+  <view class="mood-card__footer">
+    <button class="btn btn--small" bindtap="handleGuess">猜猜看 →</button>
+    <view class="reaction-bar">❤️{{item.heartCount || 12}} 😢{{item.tearCount || 3}} 😂{{item.laughCount || 5}} 🤗{{item.hugCount || 8}}</view>
+  </view>
+</view>

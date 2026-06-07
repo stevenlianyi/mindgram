@@ -1,0 +1,9 @@
+{
+  "name": "mindgram-miniprogram",
+  "version": "0.1.0",
+  "description": "Mindgram WeChat Mini Program frontend",
+  "private": true,
+  "dependencies": {
+    "tdesign-miniprogram": "^1.10.0"
+  }
+}

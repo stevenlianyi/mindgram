@@ -1,0 +1,41 @@
+<view class="page">
+  <view class="nav-row">
+    <view class="brand-title"><text class="brand-title__icon">🧠</text>Mindgram</view>
+    <button class="icon-btn">🔔</button>
+  </view>
+
+  <view class="hero-card" bindtap="goPost">
+    <view class="hero-card__date">今日情绪 · {{weekDay}}, {{today}}</view>
+    <view class="hero-card__emoji">😊</view>
+    <view class="hero-card__hint">"周一总是这样..."</view>
+    <button class="hero-card__cta">📸 去打卡</button>
+  </view>
+
+  <view class="section streak-card">
+    <view class="row-between">
+      <view class="streak-title">🔥 连续打卡 {{streakDays}}/7 天</view>
+      <view class="tag">On Fire</view>
+    </view>
+    <view class="streak-dots">
+      <view wx:for="{{streakList}}" wx:key="*this" class="streak-dot {{item ? 'streak-dot--done' : ''}} {{index === streakDays ? 'streak-dot--current' : ''}}"></view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-head">
+      <view class="section-head__title">好友动态</view>
+      <navigator url="/pages/feed/index/index" class="section-head__link">去猜猜看 →</navigator>
+    </view>
+    <view wx:for="{{previewList}}" wx:key="postID" class="home-feed-card">
+      <view class="home-feed-card__emoji">{{item.moodEmoji}}</view>
+      <view class="home-feed-card__main">
+        <view class="home-feed-card__hint">"{{item.hintNote}}"</view>
+        <view class="home-feed-card__meta">💡 {{item.guessText}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!userInfo}}" class="section login-tip">
+    <button class="btn btn--ghost btn--block" bindtap="goLogin">先登录 Mindgram</button>
+  </view>
+</view>

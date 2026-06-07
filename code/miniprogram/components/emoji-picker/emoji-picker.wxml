@@ -1,0 +1,19 @@
+<view class="emoji-picker">
+  <block wx:for="{{groups}}" wx:key="name">
+    <view class="emoji-group">
+      <view class="emoji-group__title">{{item.name}}</view>
+      <view class="emoji-grid">
+        <button
+          wx:for="{{item.emojis}}"
+          wx:for-item="emoji"
+          wx:key="*this"
+          class="emoji-button {{value === emoji ? 'emoji-button--active' : ''}}"
+          data-emoji="{{emoji}}"
+          bindtap="handleSelect"
+        >
+          {{emoji}}
+        </button>
+      </view>
+    </view>
+  </block>
+</view>

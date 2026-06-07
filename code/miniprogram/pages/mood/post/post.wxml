@@ -1,0 +1,61 @@
+<view class="page">
+  <view class="nav-row">
+    <view>
+      <view class="page-title">打卡心情</view>
+      <view class="page-subtitle">选择 Emoji，写个谜语提示。</view>
+    </view>
+    <view class="post-preview">{{moodEmoji}}</view>
+  </view>
+
+  <view class="section panel">
+    <text class="form-label">Emoji</text>
+    <emoji-picker value="{{moodEmoji}}" bind:change="handleEmojiChange" />
+  </view>
+
+  <view class="section">
+    <view class="form-label">情绪标签</view>
+    <view class="tag-row">
+      <button wx:for="{{emotionTags}}" wx:key="*this" data-tag="{{item}}" class="mood-tag {{selectedTag === item ? 'mood-tag--active' : ''}}" bindtap="handleTagSelect">{{item}}</button>
+    </view>
+  </view>
+
+  <view class="section panel">
+    <text class="form-label">谜语提示</text>
+    <textarea
+      class="textarea"
+      maxlength="200"
+      value="{{hintNote}}"
+      placeholder="例如：不是生气，是有点累了。"
+      bindinput="handleHintInput"
+    />
+  </view>
+
+  <view class="section panel">
+    <view class="row-between">
+      <text class="form-label">情绪强度</text>
+      <text class="primary-text">{{intensity}}/10</text>
+    </view>
+    <slider min="1" max="10" step="1" value="{{intensity}}" activeColor="#4ECDC4" backgroundColor="#E5E7EB" block-color="#FF6B6B" bindchange="handleIntensityChange" />
+  </view>
+
+  <view class="section panel option-panel">
+    <view class="option-row">
+      <view>
+        <view class="option-title">🎭 匿名发布</view>
+        <view class="post-note">动态里隐藏你的昵称。</view>
+      </view>
+      <switch checked="{{isAnonymous}}" color="#4ECDC4" bindchange="handleAnonymousChange" />
+    </view>
+    <view class="option-row">
+      <view>
+        <view class="option-title">🔒 仅好友可见</view>
+        <view class="post-note">只让好友参与猜谜。</view>
+      </view>
+      <switch checked="{{friendOnly}}" color="#4ECDC4" bindchange="handleFriendOnlyChange" />
+    </view>
+  </view>
+
+  <view class="section">
+    <button class="btn btn--block" loading="{{loading}}" bindtap="handleSubmit">发布打卡</button>
+  </view>
+</view>

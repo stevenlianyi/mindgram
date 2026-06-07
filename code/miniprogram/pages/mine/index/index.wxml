@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="mine-profile">
+    <view class="avatar mine-profile__avatar">👤</view>
+    <view class="mine-profile__main">
+      <view class="mine-profile__name">{{userInfo && userInfo.nickName ? userInfo.nickName : 'Mindgram 用户'}}</view>
+      <view class="mine-profile__meta">已连续打卡 5 天 · 情绪探索者</view>
+    </view>
+  </view>
+
+  <view class="section mine-stats">
+    <view class="mine-stat">
+      <view class="mine-stat__value">0</view>
+      <view class="mine-stat__label">积分</view>
+    </view>
+    <view class="mine-stat">
+      <view class="mine-stat__value">0</view>
+      <view class="mine-stat__label">徽章</view>
+    </view>
+    <view class="mine-stat">
+      <view class="mine-stat__value">0</view>
+      <view class="mine-stat__label">打卡</view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">徽章墙</view>
+    <view class="badge-grid">
+      <view class="badge-card"><view class="badge-emoji">🎯</view><view class="badge-name">共情达人</view></view>
+      <view class="badge-card"><view class="badge-emoji">🔥</view><view class="badge-name">火热持续</view></view>
+      <view class="badge-card"><view class="badge-emoji">🎭</view><view class="badge-name">匿名模式</view></view>
+      <view class="badge-card"><view class="badge-emoji">📸</view><view class="badge-name">自拍达人</view></view>
+    </view>
+  </view>
+
+  <view class="section menu-list">
+    <view class="menu-item"><view class="menu-item__left"><text>📊</text><text class="menu-item__title">统计数据</text></view><text class="menu-item__arrow">›</text></view>
+    <view class="menu-item"><view class="menu-item__left"><text>📅</text><text class="menu-item__title">历史打卡</text></view><text class="menu-item__arrow">›</text></view>
+    <navigator url="/pages/review/index/index" open-type="switchTab" class="menu-item"><view class="menu-item__left"><text>🎬</text><text class="menu-item__title">情绪回顾</text></view><text class="menu-item__arrow">›</text></navigator>
+  </view>
+
+  <view class="section menu-list">
+    <view class="menu-item"><view class="menu-item__left"><text>💬</text><text class="menu-item__title">意见反馈</text></view><text class="menu-item__arrow">›</text></view>
+    <view class="menu-item"><view class="menu-item__left"><text>ℹ️</text><text class="menu-item__title">关于 Mindgram</text></view><text class="menu-item__arrow">›</text></view>
+    <view class="menu-item"><view class="menu-item__left"><text>⚠️</text><text class="menu-item__title">免责声明</text></view><text class="menu-item__arrow">›</text></view>
+  </view>
+
+  <view class="section">
+    <button wx:if="{{!isLoggedIn}}" class="btn btn--block" bindtap="goLogin">登录</button>
+    <button wx:else class="btn btn--ghost btn--block" bindtap="handleLogout">退出登录</button>
+  </view>
+</view>

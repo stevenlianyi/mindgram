@@ -1,0 +1,8 @@
+.feed-empty-action {
+  margin-top: 24rpx;
+}
+
+.empty-emoji {
+  margin-bottom: 16rpx;
+  font-size: 64rpx;
+}

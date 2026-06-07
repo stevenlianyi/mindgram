@@ -1,0 +1,48 @@
+{
+  "pages": [
+    "pages/home/index/index",
+    "pages/auth/login/login",
+    "pages/mood/post/post",
+    "pages/feed/index/index",
+    "pages/social/friends/friends",
+    "pages/review/index/index",
+    "pages/mine/index/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "Mindgram",
+    "navigationBarBackgroundColor": "#F8F9FA",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F8F9FA",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#9CA3AF",
+    "selectedColor": "#4ECDC4",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/mood/post/post",
+        "text": "打卡"
+      },
+      {
+        "pagePath": "pages/social/friends/friends",
+        "text": "好友"
+      },
+      {
+        "pagePath": "pages/review/index/index",
+        "text": "回顾"
+      },
+      {
+        "pagePath": "pages/mine/index/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

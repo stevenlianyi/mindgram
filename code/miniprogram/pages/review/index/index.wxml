@@ -1,0 +1,19 @@
+<view class="page">
+  <view class="nav-row">
+    <view>
+      <view class="page-title">情绪回顾</view>
+      <view class="page-subtitle">把日常打卡变成周、季、年的叙事。</view>
+    </view>
+    <button class="icon-btn">🎬</button>
+  </view>
+
+  <view wx:for="{{cards}}" wx:key="title" class="review-card review-card--{{item.color}}">
+    <view class="review-card__icon">{{item.icon}}</view>
+    <view class="review-card__main">
+      <view class="review-card__title">{{item.title}}</view>
+      <view class="review-card__desc">{{item.desc}}</view>
+      <view class="tag">{{item.tag}}</view>
+    </view>
+    <view class="review-card__arrow">›</view>
+  </view>
+</view>

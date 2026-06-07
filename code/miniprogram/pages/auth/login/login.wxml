@@ -1,0 +1,14 @@
+<view class="login-screen">
+  <view class="login-brand">🧠</view>
+  <view class="login-title">Mindgram</view>
+  <view class="login-subtitle">你的情绪社交日记</view>
+
+  <view class="login-orbits">
+    <view class="orbit-emoji orbit-emoji--joy">😊</view>
+    <view class="orbit-emoji orbit-emoji--calm">😌</view>
+    <view class="orbit-emoji orbit-emoji--sad">🥲</view>
+  </view>
+
+  <button class="login-btn" loading="{{loading}}" bindtap="handleLogin">微信一键登录</button>
+  <view class="login-agreement">登录即同意 <text>用户协议</text> & <text>隐私政策</text></view>
+</view>

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "好友动态",
+  "usingComponents": {
+    "mood-card": "../../../components/mood-card/mood-card"
+  }
+}
