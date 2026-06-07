@@ -1,0 +1,8 @@
+# Python cache
+code/src/**/__pycache__/
+
+# Auto-generated database code
+code/src/database/auto_gen_code*.py
+
+# Word table CSV files
+code/src/database/word_table_*.csv
