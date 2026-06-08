@@ -1,3 +1,0 @@
-# M H D m d cmd
-0 0 * * * sh /data/accountService/src/schedule/logslice.sh > /data/accountService/log/logslice.log 2>&1
-
