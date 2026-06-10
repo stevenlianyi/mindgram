@@ -752,9 +752,9 @@ body {
         <div class="action">🔔</div>
       </div>
       <div class="card-hero" style="cursor:pointer" onclick="navigate('post')">
-        <div class="date">周日, 6月7日</div>
-        <div class="emoji-display">😊</div>
-        <div class="hint">"阳光正好，心情也不错"</div>
+        <div class="date">周五, 6月7日</div>
+        <div class="emoji-display">😊  →  😊🥴🤔😤😢</div>
+        <div class="hint">"周一总是这样..."</div>
         <div class="cta">📸 去打卡</div>
       </div>
       <div class="streak-bar">
@@ -827,9 +827,48 @@ body {
           </div>
         </div>
       </div>
+      <div class="section-title">陌生人动态</div>
+      <div class="feed-card" style="opacity:0.9;">
+        <div class="feed-header">
+          <div class="avatar" style="background:linear-gradient(135deg, #dfe6e9, #b2bec3);">🌍</div>
+          <div class="feed-user">
+            <div class="feed-name">路人甲</div>
+            <div class="feed-time">6小时前</div>
+          </div>
+        </div>
+        <div class="feed-emoji">😰</div>
+        <div class="feed-hint">"明天要汇报了，还没准备好..."</div>
+        <div class="feed-actions">
+          <button class="guess-btn" onclick="showGuessModal()">猜猜看 →</button>
+          <div class="reactions">
+            <span class="reaction">❤️ 3</span>
+            <span class="reaction">😢 6</span>
+            <span class="reaction">🤗 9</span>
+          </div>
+        </div>
+      </div>
+      <div class="feed-card" style="opacity:0.9;">
+        <div class="feed-header">
+          <div class="avatar" style="background:linear-gradient(135deg, #ffeaa7, #fdcb6e);">🌍</div>
+          <div class="feed-user">
+            <div class="feed-name">旅行者</div>
+            <div class="feed-time">8小时前</div>
+          </div>
+        </div>
+        <div class="feed-emoji">😎</div>
+        <div class="feed-hint">"海边日落，完美的一天 ☀️"</div>
+        <div class="feed-actions">
+          <button class="guess-btn" onclick="showGuessModal()">猜猜看 →</button>
+          <div class="reactions">
+            <span class="reaction">❤️ 15</span>
+            <span class="reaction">😂 2</span>
+            <span class="reaction">🤗 4</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- ==================== POST SCREEN (Tab 2) ==================== -->
+    <!-- ==================== POST SCREEN (Tab 3) ==================== -->
     <div class="screen" id="screen-post">
       <div class="navbar">
         <div class="back" onclick="navigate('home')">←</div>
@@ -909,7 +948,7 @@ body {
       <button class="btn-primary" onclick="showToast('📸 自拍打卡成功!');setTimeout(()=>navigate('home'),800)">发布自拍打卡</button>
     </div>
 
-    <!-- ==================== SOCIAL SCREEN (Tab 3) ==================== -->
+    <!-- ==================== SOCIAL SCREEN (Tab 2) ==================== -->
     <div class="screen" id="screen-social">
       <div class="navbar">
         <span class="title">好友</span>
@@ -1060,10 +1099,12 @@ body {
         <div class="metric-card"><div class="metric-value" style="color:var(--hope);">23</div><div class="metric-label">连续打卡</div></div>
       </div>
       <div class="section-title">月度情绪柱状图</div>
-      <div class="chart-bar">
-        <div class="bar-col"><div class="bar-fill" style="height:90px;background:linear-gradient(180deg,#7C83FD,#a29bfe);"></div><div class="bar-label">1月</div></div>
-        <div class="bar-col"><div class="bar-fill" style="height:130px;background:linear-gradient(180deg,#4ECDC4,#6EDCD4);"></div><div class="bar-label">2月</div></div>
-        <div class="bar-col"><div class="bar-fill" style="height:105px;background:linear-gradient(180deg,#FFA07A,#FFB89A);"></div><div class="bar-label">3月</div></div>
+      <div style="background:#fff;margin:8px 16px;padding:20px;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="chart-bar" style="padding:0;">
+          <div class="bar-col"><div class="bar-fill" style="height:90px;background:linear-gradient(180deg,#7C83FD,#a29bfe);"></div><div class="bar-label">1月</div></div>
+          <div class="bar-col"><div class="bar-fill" style="height:130px;background:linear-gradient(180deg,#4ECDC4,#6EDCD4);"></div><div class="bar-label">2月</div></div>
+          <div class="bar-col"><div class="bar-fill" style="height:105px;background:linear-gradient(180deg,#FFA07A,#FFB89A);"></div><div class="bar-label">3月</div></div>
+        </div>
       </div>
       <div class="card">
         <div style="font-size:15px;font-weight:600;margin-bottom:8px;">📊 模式发现</div>
@@ -1209,6 +1250,7 @@ body {
       <div class="menu-list">
         <div class="menu-item"><div class="left"><span class="m-icon">📊</span><span class="m-text">统计数据</span></div><span class="arrow">›</span></div>
         <div class="menu-item"><div class="left"><span class="m-icon">📅</span><span class="m-text">历史打卡</span></div><span class="arrow">›</span></div>
+        <div class="menu-item"><div class="left"><span class="m-icon">🎨</span><span class="m-text">心情模板</span></div><span class="arrow">›</span></div>
         <div class="menu-item" onclick="navigate('review')"><div class="left"><span class="m-icon">🎬</span><span class="m-text">情绪回顾</span></div><span class="arrow">›</span></div>
       </div>
       <div class="menu-list">
@@ -1260,11 +1302,11 @@ body {
     <div class="tab-item active" data-screen="home" onclick="switchTab('home')">
       <span class="icon">🏠</span><span class="label">首页</span>
     </div>
-    <div class="tab-item add-btn" data-screen="post" onclick="switchTab('post')">
-      <span class="icon">＋</span><span class="label">打卡</span>
-    </div>
     <div class="tab-item" data-screen="social" onclick="switchTab('social')">
       <span class="icon">👥</span><span class="label">好友</span>
+    </div>
+    <div class="tab-item add-btn" data-screen="post" onclick="switchTab('post')">
+      <span class="icon">＋</span><span class="label">打卡</span>
     </div>
     <div class="tab-item" data-screen="review" onclick="switchTab('review')">
       <span class="icon">🎬</span><span class="label">回顾</span>
@@ -1277,7 +1319,7 @@ body {
 
 <script>
 // ===== Navigation =====
-const tabScreens = ['home','post','social','review','mine'];
+const tabScreens = ['home','social','post','review','mine'];
 
 function hideAllScreens() {
   document.querySelectorAll('.screen, .login-screen').forEach(s => s.classList.remove('active'));

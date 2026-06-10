@@ -7509,6 +7509,9 @@ def funcMguserbadgeQry(CMD,dataSet,sessionIDSet):
 
 
 #Server RESTå¢åŠ ä»£ç 
+
+
+#Server RESTÔö¼Ó´úÂë
 def funcMguserstatsAdd(CMD,dataSet,sessionIDSet):
     result = {}
     errCode = "B0"
@@ -7516,8 +7519,8 @@ def funcMguserstatsAdd(CMD,dataSet,sessionIDSet):
     rtnField = ""
     rtnData = {}
 
-    dataValidFlag = True #æ•°æ®æ˜¯å¦æœ‰æ•ˆçš„æ ‡å¿—
-    rtnErrMsgList = [] #æ•°æ®é”™è¯¯åŸå› 
+    dataValidFlag = True #Êı¾İÊÇ·ñÓĞĞ§µÄ±êÖ¾
+    rtnErrMsgList = [] #Êı¾İ´íÎóÔ­Òò
 
     try:
         lang = dataSet.get("lang", comGD._DEF_DEFAULT_LANGUAGE)
@@ -7528,7 +7531,7 @@ def funcMguserstatsAdd(CMD,dataSet,sessionIDSet):
 
         if tempUserID != "":
             loginID = tempUserID
-            #æƒé™æ£€æŸ¥
+            #È¨ÏŞ¼ì²é
 
             if errCode == "B0": #
                 #data validation check
@@ -7545,6 +7548,7 @@ def funcMguserstatsAdd(CMD,dataSet,sessionIDSet):
                     saveSet["totalGuesses"] = dataSet.get("totalGuesses", "") 
                     saveSet["weeklyRank"] = dataSet.get("weeklyRank", "") 
                     saveSet["lastPostDate"] = dataSet.get("lastPostDate", "") 
+                    saveSet["allowShowMoodToFriends"] = dataSet.get("allowShowMoodToFriends", "") 
                     saveSet["delFlag"] = dataSet.get("delFlag", "0") 
                     saveSet["regID"] = loginID
                     saveSet["regYMDHMS"] = misc.getTime()
@@ -7554,7 +7558,7 @@ def funcMguserstatsAdd(CMD,dataSet,sessionIDSet):
                     rtnData["recID"] = str(recID)
 
                     if recID <= 0:
-                        #è®°å½•æ·»åŠ å¤±è´¥
+                        #¼ÇÂ¼Ìí¼ÓÊ§°Ü
                         errCode = "CG"
                         _LOG.warning(f"rtn:{recID},saveSet:{saveSet}")
                     else:
@@ -7589,7 +7593,7 @@ def funcMguserstatsAdd(CMD,dataSet,sessionIDSet):
     return result
 
 
-#Server RESTåˆ é™¤ä»£ç 
+#Server RESTÉ¾³ı´úÂë
 def funcMguserstatsDel(CMD,dataSet,sessionIDSet):
     result = {}
     errCode = "B0"
@@ -7597,8 +7601,8 @@ def funcMguserstatsDel(CMD,dataSet,sessionIDSet):
     rtnField = ""
     rtnData = {}
 
-    dataValidFlag = True #æ•°æ®æ˜¯å¦æœ‰æ•ˆçš„æ ‡å¿—
-    rtnErrMsgList = [] #æ•°æ®é”™è¯¯åŸå› 
+    dataValidFlag = True #Êı¾İÊÇ·ñÓĞĞ§µÄ±êÖ¾
+    rtnErrMsgList = [] #Êı¾İ´íÎóÔ­Òò
 
     try:
 
@@ -7610,7 +7614,7 @@ def funcMguserstatsDel(CMD,dataSet,sessionIDSet):
 
         if tempUserID != "":
             loginID = tempUserID
-            #æƒé™æ£€æŸ¥
+            #È¨ÏŞ¼ì²é
 
             if errCode == "B0": #
                 userID = dataSet.get("userID", "")
@@ -7654,7 +7658,7 @@ def funcMguserstatsDel(CMD,dataSet,sessionIDSet):
     return result
 
 
-#Server RESTä¿®æ”¹ä»£ç 
+#Server RESTĞŞ¸Ä´úÂë
 def funcMguserstatsModify(CMD,dataSet,sessionIDSet):
     result = {}
     errCode = "B0"
@@ -7662,8 +7666,8 @@ def funcMguserstatsModify(CMD,dataSet,sessionIDSet):
     rtnField = ""
     rtnData = {}
 
-    dataValidFlag = True #æ•°æ®æ˜¯å¦æœ‰æ•ˆçš„æ ‡å¿—
-    rtnErrMsgList = [] #æ•°æ®é”™è¯¯åŸå› 
+    dataValidFlag = True #Êı¾İÊÇ·ñÓĞĞ§µÄ±êÖ¾
+    rtnErrMsgList = [] #Êı¾İ´íÎóÔ­Òò
 
     try:
 
@@ -7676,7 +7680,7 @@ def funcMguserstatsModify(CMD,dataSet,sessionIDSet):
         if tempUserID != "":
             loginID = tempUserID
 
-            #æƒé™æ£€æŸ¥/åŠŸèƒ½æ£€æµ‹
+            #È¨ÏŞ¼ì²é/¹¦ÄÜ¼ì²â
 
             if errCode == "B0": #
                 #data validation check
@@ -7692,11 +7696,12 @@ def funcMguserstatsModify(CMD,dataSet,sessionIDSet):
                 totalGuesses = dataSet.get("totalGuesses") 
                 weeklyRank = dataSet.get("weeklyRank") 
                 lastPostDate = dataSet.get("lastPostDate") 
+                allowShowMoodToFriends = dataSet.get("allowShowMoodToFriends") 
                 delFlag = dataSet.get("delFlag") 
-                #data valid æ£€æŸ¥
+                #data valid ¼ì²é
 
                 if dataValidFlag:
-                    #å½“å‰è®°å½•è·å–
+                    #µ±Ç°¼ÇÂ¼»ñÈ¡
                     recID = dataSet.get("userID", "")
 
                     tableName = comMysql.tablename_convertor_mgUserStats()
@@ -7705,7 +7710,7 @@ def funcMguserstatsModify(CMD,dataSet,sessionIDSet):
                     if len(currDataList) == 1:
                         currDataSet = currDataList[0]
 
-                        #æƒé™æˆ–å…¶ä»–æ£€æŸ¥
+                        #È¨ÏŞ»òÆäËû¼ì²é
                         if errCode == "B0": #
 
                             saveSet = {}
@@ -7740,6 +7745,9 @@ def funcMguserstatsModify(CMD,dataSet,sessionIDSet):
                             if lastPostDate != currDataSet.get("lastPostDate") and lastPostDate:
                                 saveSet["lastPostDate"] = lastPostDate
 
+                            if allowShowMoodToFriends != currDataSet.get("allowShowMoodToFriends"):
+                                saveSet["allowShowMoodToFriends"] = allowShowMoodToFriends
+
                             if delFlag != currDataSet.get("delFlag") and delFlag:
                                 saveSet["delFlag"] = delFlag
 
@@ -7748,7 +7756,7 @@ def funcMguserstatsModify(CMD,dataSet,sessionIDSet):
                                 saveSet["modifyID"] = loginID
                                 saveSet["modifyYMDHMS"] = misc.getTime()
 
-                                #ä¿å­˜æ•°æ®
+                                #±£´æÊı¾İ
                                 tableName = comMysql.tablename_convertor_mgUserStats()
                                 rtn = comMysql.update_mgUserStats(tableName,userID,saveSet)
                                 rtnData["rtn"] = str(rtn)
@@ -7795,7 +7803,7 @@ def funcMguserstatsModify(CMD,dataSet,sessionIDSet):
     return result
 
 
-#Server RESTæŸ¥è¯¢ä»£ç 
+#Server REST²éÑ¯´úÂë
 def funcMguserstatsQry(CMD,dataSet,sessionIDSet):
     result = {}
     errCode = "B0"
@@ -7803,8 +7811,8 @@ def funcMguserstatsQry(CMD,dataSet,sessionIDSet):
     rtnField = ""
     rtnData = {}
 
-    dataValidFlag = True #æ•°æ®æ˜¯å¦æœ‰æ•ˆçš„æ ‡å¿—
-    rtnErrMsgList = [] #æ•°æ®é”™è¯¯åŸå› 
+    dataValidFlag = True #Êı¾İÊÇ·ñÓĞĞ§µÄ±êÖ¾
+    rtnErrMsgList = [] #Êı¾İ´íÎóÔ­Òò
 
     try:
 
@@ -7817,15 +7825,15 @@ def funcMguserstatsQry(CMD,dataSet,sessionIDSet):
         if tempUserID != "":
             loginID = tempUserID
 
-            #æƒé™æ£€æŸ¥
+            #È¨ÏŞ¼ì²é
 
             if errCode == "B0": #
-                #è·å–æŸ¥è¯¢è¾“å…¥å‚æ•°
+                #»ñÈ¡²éÑ¯ÊäÈë²ÎÊı
                 userID = dataSet.get("userID", "")
 
                 #houseID = dataSet.get("houseID", "")
 
-                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #æ˜¯å¦å¼ºåˆ¶æŸ¥è¯¢(åˆ·æ–°)æ ‡è®°
+                forceFlashFlag = dataSet.get("forceFlashFlag",comGD._CONST_NO) #ÊÇ·ñÇ¿ÖÆ²éÑ¯(Ë¢ĞÂ)±ê¼Ç
 
                 searchOption = dataSet.get("searchOption")
 
@@ -7833,14 +7841,14 @@ def funcMguserstatsQry(CMD,dataSet,sessionIDSet):
 
                 #limitNum = dataSet.get("limitNum",0)
 
-                #æƒé™æ£€æŸ¥/åŠŸèƒ½æ£€æµ‹
+                #È¨ÏŞ¼ì²é/¹¦ÄÜ¼ì²â
 
                 rightCheckFlag = True
 
                 if rightCheckFlag:
 
-                    #ç”ŸæˆindexKey
-                    indexKeyDataSet = {} #æŸ¥è¯¢ç”Ÿæˆindexçš„å› ç´ 
+                    #Éú³ÉindexKey
+                    indexKeyDataSet = {} #²éÑ¯Éú³ÉindexµÄÒòËØ
                     if userID:
                         indexKeyDataSet["userID"] = userID
                     if searchOption:
@@ -7856,14 +7864,14 @@ def funcMguserstatsQry(CMD,dataSet,sessionIDSet):
                     beginNum = int(dataSet.get("beginNum", comGD._DEF_BUFFER_DATA_BEGIN_NUM)) 
                     endNum = int(dataSet.get("endNum", comGD._DEF_BUFFER_DATA_END_NUM)) 
 
-                    #åˆ¤æ–­æ•°æ®æ˜¯å¦åœ¨ç¼“å†²åŒº:
+                    #ÅĞ¶ÏÊı¾İÊÇ·ñÔÚ»º³åÇø:
                     if not(useQueryBufferFlag and chkBufferExist(indexKey)) or forceFlashFlag == comGD._CONST_YES:
 
                         if searchOption:
                             currDataList = []
                             tableName = comMysql.tablename_convertor_mgUserStats()
                             allDataList = comMysql.query_mgUserStats(tableName,mode = mode)
-                            allowList = ["description", "label"] #ç­›é€‰å­—æ®µ
+                            allowList = ["description", "label"] #É¸Ñ¡×Ö¶Î
                             serachResultSet = comFC.handleSearchOption(searchOption,allowList, allDataList)
                             if serachResultSet["rtn"] == "B0":
                                 currDataList = serachResultSet.get("data", [])
@@ -7880,7 +7888,7 @@ def funcMguserstatsQry(CMD,dataSet,sessionIDSet):
                         for currDataSet in currDataList:
                             aSet = {}
 
-                            #éœ€è¦æŠŠæ–‡ä»¶è½¬ç§»åˆ°public domain
+                            #ĞèÒª°ÑÎÄ¼ş×ªÒÆµ½public domain
                             #appendixFileID00 =  currDataSet.get("appendixFileID00", "")
                             #appendixFileID00 = getTempLocation(appendixFileID00, privateFlag = True)
 
@@ -7897,6 +7905,7 @@ def funcMguserstatsQry(CMD,dataSet,sessionIDSet):
                             aSet["totalGuesses"] = currDataSet.get("totalGuesses","")
                             aSet["weeklyRank"] = currDataSet.get("weeklyRank","")
                             aSet["lastPostDate"] = currDataSet.get("lastPostDate","")
+                            aSet["allowShowMoodToFriends"] = currDataSet.get("allowShowMoodToFriends","")
                             aSet["regID"] = currDataSet.get("regID","")
                             aSet["regYMDHMS"] = currDataSet.get("regYMDHMS","")
                             aSet["modifyID"] = currDataSet.get("modifyID","")
@@ -7905,8 +7914,8 @@ def funcMguserstatsQry(CMD,dataSet,sessionIDSet):
 
                             dataList.append(aSet)
 
-                        #ä¸´æ—¶ç¼“å­˜æœºåˆ¶,æ”¹è¿›å‹, 2023/10/16
-                        indexKey = putQuery2Buffer(indexKey, dataList) #å­˜æ”¾æ•°æ®åˆ°ä¸´æ—¶ç¼“å†²åŒºå»
+                        #ÁÙÊ±»º´æ»úÖÆ,¸Ä½øĞÍ, 2023/10/16
+                        indexKey = putQuery2Buffer(indexKey, dataList) #´æ·ÅÊı¾İµ½ÁÙÊ±»º³åÇøÈ¥
 
                     rtnData = getQueryBufferComplte(indexKey, beginNum = beginNum,  endNum = endNum)
 
@@ -7938,11 +7947,6 @@ def funcMguserstatsQry(CMD,dataSet,sessionIDSet):
     return result
 
 
-
-
-
-
-#Server RESTå¢åŠ ä»£ç 
 def funcMgweeklyreelAdd(CMD,dataSet,sessionIDSet):
     result = {}
     errCode = "B0"

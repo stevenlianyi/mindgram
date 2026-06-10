@@ -4,7 +4,7 @@
 #add src directory
 # ver: 2020-05-26
 
-_VERSION="20230716"
+_VERSION="20240428"
 
 _DEBUG = True
 
@@ -176,7 +176,17 @@ class mysqlHandle:
     def rollbackWrite(self, rownum, mode = "relative"):
 #        self.dbW.ping()
         self.dbW.rollback()
-        
+
+    def rollback(self):
+#        self.dbW.ping()
+        self.dbW.rollback()
+
+    def autocommit(self, commitFlag = True):
+        self.autoCommitFlag = commitFlag
+
+    def commit(self):
+        self.dbW.commit()
+
     # 关闭
     def close(self):
         self.dbW.close()
